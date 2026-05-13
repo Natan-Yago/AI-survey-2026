@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>סקר בשלות AI · ברוכים הבאים</title>
+  <script src="assets/tailwind-config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body class="welcome-body min-h-screen bg-bg">
+
+  <a href="index.html" class="welcome-mobile-logo fixed top-5 left-5 z-20 inline-flex lg:hidden" aria-label="Deloitte">
+    <img
+      src="Deloitte-Master-Logo-Black-RGB.png"
+      alt="Deloitte"
+      class="h-10 sm:h-12 w-auto"
+    />
+  </a>
+
+  <!-- Full-width two-column layout -->
+  <div class="welcome-layout min-h-screen w-full grid grid-cols-1 lg:grid-cols-2" dir="ltr">
+
+    <!-- Left column: full-bleed image -->
+    <aside class="welcome-image-col relative hidden lg:block bg-ink overflow-hidden" dir="rtl">
+      <img
+        src="../generated_image_04490400-3a1e-4706-b8f0-04d21946f8af.png"
+        alt=""
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+      <!-- Subtle overlay for legibility -->
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent"></div>
+
+      <!-- Deloitte logo -->
+      <a href="index.html" class="absolute top-8 left-8 z-10 inline-flex" aria-label="Deloitte">
+        <img
+          src="Deloitte-Master-Logo-Black-RGB.png"
+          alt="Deloitte"
+          class="h-20 w-auto"
+        />
+      </a>
+
+      <!-- Bottom brand block -->
+      <div class="absolute bottom-8 right-8 left-8 text-white">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="inline-block w-2 h-2 rounded-full bg-deloitte-green"></span>
+          <span class="text-sm font-medium tracking-wide opacity-90">Deloitte State of AI · ישראל 2026</span>
+        </div>
+        <p class="text-white/85 text-sm max-w-sm leading-relaxed">
+          מפת הבשלות והאימוץ של בינה מלאכותית בארגונים בישראל.
+        </p>
+      </div>
+    </aside>
+
+    <!-- Right column: welcome content -->
+    <section class="welcome-content-col flex flex-col min-h-screen" dir="rtl">
+
+      <!-- Content -->
+      <main class="welcome-main flex-1 px-6 sm:px-10 lg:px-14 pt-28 pb-12 sm:pt-32 sm:pb-16 lg:py-16 flex items-center justify-center">
+        <div class="w-full max-w-xl">
+
+          <!-- Eyebrow (mobile only; desktop shows it on the image) -->
+          <div class="welcome-mobile-eyebrow flex items-center gap-2 mb-6 lg:hidden">
+            <span class="inline-block w-2 h-2 rounded-full bg-deloitte-green"></span>
+            <span class="text-sm font-medium text-muted tracking-wide">Deloitte State of AI · ישראל 2026</span>
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl xl:text-7xl font-bold leading-tight mb-5">
+            סקר בשלות ואימוץ <span class="font-latin">AI</span> בארגונים
+          </h1>
+
+          <p class="text-lg text-ink/80 leading-relaxed mb-5">
+            בעידן שבו בינה מלאכותית משנה במהירות את הדרך שבה ארגונים פועלים, מתחרים ומייצרים ערך, היכולת לאמץ, להטמיע ולהרחיב שימוש ביכולות <span class="font-latin">AI</span> הופכת לגורם אסטרטגי מרכזי.
+          </p>
+          <p class="text-base text-muted leading-relaxed mb-10">
+            סקר זה נועד לבחון את מצב ה-<span class="font-latin">AI</span> בארגונים בישראל, את רמת המוכנות, האימוץ, ההשקעות, החסמים והתוכניות קדימה.
+          </p>
+
+          <!-- CTAs -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-8">
+            <a href="question-single.html" class="btn-accent text-center text-base">
+              התחל סקר ←
+            </a>
+          </div>
+
+          <!-- Privacy note -->
+          <p class="text-sm text-muted leading-relaxed border-t border-border pt-6">
+            כלל התשובות יישמרו באופן אנונימי וישמשו לצורכי מחקר וניתוח מצרפי בלבד.
+            בכל שאלה, אנא בחר/י את האפשרות המשקפת בצורה המדויקת ביותר את המצב בארגון שלך כיום.
+          </p>
+        </div>
+      </main>
+    </section>
+  </div>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

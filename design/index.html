@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>סקר בשלות AI · גלריית עיצוב</title>
+  <script src="assets/tailwind-config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/styles.css" />
+  <style>
+    .preview-frame {
+      width: 1280px;
+      height: 800px;
+      border: 0;
+      transform-origin: top right;
+      transform: scale(0.34);
+      pointer-events: none;
+    }
+    .preview-wrap {
+      width: 100%;
+      aspect-ratio: 1280 / 800;
+      overflow: hidden;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-bg">
+
+  <header class="border-b border-border bg-white">
+    <div class="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
+      <div class="font-latin font-bold text-lg tracking-tight">Survey<span class="text-deloitte-green">.</span> <span class="text-muted font-normal text-sm ms-2">Design Gallery</span></div>
+      <span class="text-sm text-muted hidden sm:block">סקר בשלות ואימוץ AI · עיצובי מסכים</span>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-6 py-10">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold mb-2">גלריית עיצוב</h1>
+      <p class="text-muted">לחץ/י על מסך כדי לפתוח אותו בגודל מלא. הפריטים מוצגים בקנה מידה מוקטן לתצוגה.</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+      <a href="welcome.html" class="block group">
+        <div class="preview-wrap mb-3 group-hover:shadow-md transition-shadow">
+          <iframe class="preview-frame" src="welcome.html" title="Welcome"></iframe>
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-semibold">1 · מסך פתיחה</div>
+            <div class="text-xs text-muted mt-0.5">welcome.html</div>
+          </div>
+          <span class="text-deloitte-green text-sm">פתח ←</span>
+        </div>
+      </a>
+
+      <a href="question-single.html" class="block group">
+        <div class="preview-wrap mb-3 group-hover:shadow-md transition-shadow">
+          <iframe class="preview-frame" src="question-single.html" title="All survey questions"></iframe>
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-semibold">2 · שאלות הסקר ללא כרטיס</div>
+            <div class="text-xs text-muted mt-0.5">question-single.html</div>
+          </div>
+          <span class="text-deloitte-green text-sm">פתח ←</span>
+        </div>
+      </a>
+
+      <a href="thank-you.html" class="block group">
+        <div class="preview-wrap mb-3 group-hover:shadow-md transition-shadow">
+          <iframe class="preview-frame" src="thank-you.html" title="Thank you"></iframe>
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-semibold">3 · מסך תודה</div>
+            <div class="text-xs text-muted mt-0.5">thank-you.html</div>
+          </div>
+          <span class="text-deloitte-green text-sm">פתח ←</span>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="mt-12 surface-card p-6">
+      <h2 class="font-semibold mb-2">שלבי העיצוב</h2>
+      <ul class="text-sm text-muted space-y-1 list-disc ps-5">
+        <li>מערכת עיצוב משותפת: צבעים (ירוק <span class="font-latin">#86BC25</span>), טיפוגרפיה (<span class="font-latin">Open Sans Hebrew</span>), פינות מעוגלות, פוקוס נגיש.</li>
+        <li>ניווט שאלה-בכל-מסך ללא כרטיס מרכזי, עם פס התקדמות + מונה שאלות.</li>
+        <li>קיצורי מקלדת: <span class="kbd font-latin">1</span>–<span class="kbd font-latin">9</span> לבחירה, <span class="kbd font-latin">Enter</span> להמשך.</li>
+        <li>רספונסיבי: <span class="font-latin">375 / 768 / 1280</span> פיקסלים.</li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,584 @@
+/* AI Survey — Summary page styles
+   Loaded in addition to styles.css. Adds: stage badge, pillar bars, stage
+   progress, recommendation cards, gift cards, expert grid, demo switcher and
+   a print stylesheet that turns each summary into a clean 1–2 page export. */
+
+/* Layout ------------------------------------------------------------------ */
+.summary-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.summary-section {
+  padding: 1.5rem;
+}
+@media (min-width: 640px) {
+  .summary-section { padding: 2rem; }
+}
+.summary-section--bare { padding: 0.5rem 0; }
+.summary-section-head { margin-bottom: 1.25rem; }
+.summary-section-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+.summary-section-sub {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.summary-footnote {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 0.5rem;
+  line-height: 1.6;
+}
+
+/* Hero ------------------------------------------------------------------- */
+.summary-hero { padding: 1.5rem 0 0.5rem; }
+@media (min-width: 640px) { .summary-hero { padding: 0.5rem 0 1rem; } }
+.stage-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  background: rgba(134, 188, 37, 0.12);
+  color: var(--deloitte-green-dark);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Pillar bars ------------------------------------------------------------ */
+.pillar-list { display: grid; gap: 1.1rem; }
+.pillar-row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.4rem;
+}
+.pillar-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.pillar-tag {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: #FFF1E6;
+  color: #B8541E;
+}
+.pillar-score { font-size: 0.95rem; font-weight: 700; color: var(--ink); }
+.pillar-track {
+  height: 8px;
+  background: #ECECEA;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.pillar-fill {
+  height: 100%;
+  background: var(--deloitte-green);
+  border-radius: 999px;
+  transition: width 400ms ease;
+}
+.pillar-fill.is-weak { background: #E0883D; }
+
+/* Stage progress --------------------------------------------------------- */
+.stage-progress {
+  display: flex;
+  align-items: center;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  gap: 0.5rem;
+}
+.stage-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+.stage-step-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.stage-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: #E5E5E5;
+  border: 2px solid #E5E5E5;
+}
+.stage-step.is-past .stage-dot { background: var(--deloitte-green); border-color: var(--deloitte-green); }
+.stage-step.is-current .stage-dot {
+  background: var(--deloitte-green);
+  border-color: var(--deloitte-green);
+  box-shadow: 0 0 0 4px rgba(134, 188, 37, 0.22);
+}
+.stage-step.is-current .stage-step-label { color: var(--ink); }
+.stage-line {
+  flex: 1;
+  height: 2px;
+  background: #E5E5E5;
+  border-radius: 999px;
+  margin-bottom: 1.1rem;
+}
+
+/* Benchmark -------------------------------------------------------------- */
+.summary-benchmark {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background:
+    radial-gradient(circle at top right, rgba(134, 188, 37, 0.10), rgba(134, 188, 37, 0) 18rem),
+    #fff;
+}
+.benchmark-figure {
+  flex-shrink: 0;
+  width: 84px;
+  height: 84px;
+  border-radius: 999px;
+  background: rgba(134, 188, 37, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--deloitte-green-dark);
+}
+.benchmark-num { font-size: 1.55rem; font-weight: 700; }
+.benchmark-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+.benchmark-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+/* Implications ----------------------------------------------------------- */
+.implication-list { display: grid; gap: 0.9rem; }
+.implication-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.implication-bullet {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(134, 188, 37, 0.16);
+  color: var(--deloitte-green-dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.implication-bullet svg { width: 16px; height: 16px; }
+
+/* Recommendations ------------------------------------------------------- */
+.rec-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 720px) {
+  .rec-grid { grid-template-columns: 1fr 1fr; }
+}
+.rec-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color 150ms ease, transform 100ms ease, box-shadow 150ms ease;
+}
+.rec-card:hover {
+  border-color: var(--deloitte-green);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  transform: translateY(-1px);
+}
+.rec-card--fix     { border-top: 4px solid #E0883D; }
+.rec-card--amplify { border-top: 4px solid var(--deloitte-green); }
+.rec-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.rec-title { font-size: 1.05rem; font-weight: 700; line-height: 1.4; }
+.rec-desc  { font-size: 0.9rem; line-height: 1.6; color: var(--ink); opacity: 0.85; }
+.rec-link  { margin-top: auto; font-size: 0.85rem; font-weight: 600; color: var(--deloitte-green-dark); }
+
+/* Gifts ----------------------------------------------------------------- */
+.gift-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+}
+@media (min-width: 720px) {
+  .gift-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.gift-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+  background: #FBFCF8;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.1rem 1.1rem 1.25rem;
+  text-align: start;
+  text-decoration: none;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+.gift-card:hover { border-color: var(--deloitte-green); background: #F4F9EA; }
+.gift-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--deloitte-green-dark);
+}
+.gift-icon svg { width: 18px; height: 18px; }
+.gift-title { font-size: 0.95rem; font-weight: 700; }
+.gift-desc  { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+
+/* Experts --------------------------------------------------------------- */
+.expert-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+@media (min-width: 720px) {
+  .expert-grid { grid-template-columns: 1fr 1fr; }
+}
+.expert-card {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+}
+.expert-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: rgba(134, 188, 37, 0.16);
+  color: var(--deloitte-green-dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+.expert-name { font-weight: 700; font-size: 0.95rem; }
+.expert-role { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
+.expert-mail { font-size: 0.78rem; color: var(--deloitte-green-dark); display: inline-block; margin-top: 0.2rem; }
+.expert-mail:hover { text-decoration: underline; }
+
+/* Demo switcher --------------------------------------------------------- */
+.demo-switcher {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: #1A1A1A;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.85rem;
+  align-items: center;
+}
+.demo-label { color: rgba(255,255,255,0.65); font-weight: 600; }
+.demo-link {
+  color: #fff;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.2);
+  text-decoration: none;
+}
+.demo-link:hover { background: rgba(255,255,255,0.1); }
+.demo-link.is-active { background: var(--deloitte-green); border-color: var(--deloitte-green); }
+
+/* Print ----------------------------------------------------------------- */
+@media print {
+  @page { size: A4; margin: 14mm; }
+  html, body { background: #fff !important; }
+  header, .demo-switcher, .gift-card[data-action], .summary-footnote a { display: none !important; }
+  .summary-section, .surface-card {
+    box-shadow: none !important;
+    border-color: #E5E5E5 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .summary-main { gap: 0.8rem !important; }
+  .summary-hero h1 { font-size: 1.6rem !important; }
+  .summary-section-title { font-size: 1rem !important; }
+  .rec-card:hover { transform: none !important; box-shadow: none !important; }
+  .summary-gifts { display: none !important; }
+  .pillar-fill { background: #86BC25 !important; }
+  .pillar-fill.is-weak { background: #444 !important; }
+  a { color: inherit !important; text-decoration: none !important; }
+}
+
+/* Survey-flow alignment --------------------------------------------------- */
+.summary-main {
+  gap: 2rem;
+}
+
+.summary-hero {
+  padding: 0;
+}
+
+.summary-section {
+  padding: 1.5rem 0 0;
+  border-top: 1px solid rgba(26, 26, 26, 0.12);
+}
+
+.summary-section--bare {
+  padding: 1.5rem 0 0;
+}
+
+.summary-section-head {
+  margin-bottom: 1rem;
+}
+
+.summary-section-title {
+  font-size: 1.05rem;
+  line-height: 1.45;
+  margin-bottom: 0.2rem;
+}
+
+.summary-section-sub {
+  line-height: 1.6;
+}
+
+.summary-answer {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  color: var(--ink);
+  line-height: 1.75;
+  font-size: 0.95rem;
+}
+
+.summary-answer-marker {
+  width: 22px;
+  height: 22px;
+  margin-top: 0.15rem;
+  border-radius: 999px;
+  border: 2px solid var(--deloitte-green);
+  background: var(--deloitte-green);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.summary-answer-marker::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.pillar-list {
+  gap: 1rem;
+}
+
+.pillar-row {
+  padding: 0.85rem 0;
+  border-top: 1px solid rgba(26, 26, 26, 0.08);
+}
+
+.pillar-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.pillar-label {
+  font-size: 0.88rem;
+}
+
+.pillar-tag {
+  border-radius: 6px;
+  background: #F1F2F4;
+  color: var(--muted);
+}
+
+.pillar-track {
+  height: 4px;
+  background: #ECECEA;
+}
+
+.pillar-fill.is-weak {
+  background: var(--deloitte-green-dark);
+}
+
+.stage-progress {
+  margin-top: 1.35rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(26, 26, 26, 0.12);
+}
+
+.stage-line {
+  background: #DDE1D6;
+}
+
+.summary-benchmark {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #FEFFFB;
+}
+
+.benchmark-figure {
+  width: 62px;
+  height: 62px;
+  border-radius: 12px;
+  background: #F1F2F4;
+  color: var(--ink);
+}
+
+.benchmark-num {
+  font-size: 1.2rem;
+}
+
+.benchmark-eyebrow {
+  letter-spacing: 0;
+  text-transform: none;
+  margin-bottom: 0.25rem;
+}
+
+.benchmark-text {
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+.implication-list,
+.rec-grid,
+.gift-grid,
+.expert-grid {
+  gap: 0.75rem;
+}
+
+.implication-item {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  padding: 1rem;
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.rec-card,
+.gift-card,
+.expert-card {
+  border-radius: 16px;
+  padding: 1rem;
+  background: #FEFFFB;
+  box-shadow: none;
+}
+
+.rec-card--fix,
+.rec-card--amplify {
+  border-top-width: 1px;
+}
+
+.rec-card--fix {
+  box-shadow: inset 3px 0 0 var(--deloitte-green-dark);
+}
+
+.rec-card--amplify {
+  box-shadow: inset 3px 0 0 var(--deloitte-green);
+}
+
+[dir="rtl"] .rec-card--fix,
+[dir="rtl"] .rec-card--amplify {
+  box-shadow: inset -3px 0 0 var(--deloitte-green);
+}
+
+[dir="rtl"] .rec-card--fix {
+  box-shadow: inset -3px 0 0 var(--deloitte-green-dark);
+}
+
+.rec-card:hover,
+.gift-card:hover,
+.expert-card:hover,
+.summary-benchmark:hover,
+.implication-item:hover {
+  box-shadow: none;
+  transform: none;
+}
+
+.rec-eyebrow {
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.rec-title,
+.gift-title,
+.expert-name {
+  line-height: 1.45;
+}
+
+.gift-card {
+  align-items: stretch;
+}
+
+.gift-icon,
+.expert-avatar {
+  border-radius: 10px;
+  background: #F1F2F4;
+  color: var(--ink);
+}
+
+.expert-card {
+  align-items: flex-start;
+}
+
+.summary-footnote {
+  margin: -0.5rem 0 0;
+  text-align: start;
+}
+
+@media (max-width: 640px) {
+  .summary-benchmark {
+    align-items: flex-start;
+  }
+
+  .stage-progress {
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+  }
+}
