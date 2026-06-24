@@ -10,9 +10,13 @@ import type {
 } from '../types';
 import { useAnswers } from '../state/AnswersContext';
 import { renderInline } from '../lib/inline';
+import { isQuestionAnswered } from '../lib/scoring';
 import OptionCard, { MatrixOption } from '../components/OptionCard';
+import MatrixTable from '../components/MatrixTable';
 import FactModal from '../components/FactModal';
 import { FACT_BY_QUESTION_INDEX } from '../data/facts';
+
+const MATRIX_TABLE_QUESTION_INDEXES = new Set([7, 9, 13, 16, 31]);
 
 function clampIndex(n: number): number {
   if (Number.isNaN(n)) return 0;
@@ -31,10 +35,14 @@ export default function QuestionPage() {
   const isLast = idx === total - 1;
   const key = `q${idx + 1}`;
   const answer = answers[key];
+  const isAnswered = useMemo(() => isQuestionAnswered(idx, answers), [idx, answers]);
 
   const [note, setNote] = useState('');
   const [factOpen, setFactOpen] = useState(false);
   const factForQuestion = FACT_BY_QUESTION_INDEX[idx];
+  const usesMatrixTable = MATRIX_TABLE_QUESTION_INDEXES.has(idx)
+    && (question.type === 'matrix-single' || question.type === 'matrix-column-single' || question.type === 'matrix-multi');
+  const contentMaxWidthClass = usesMatrixTable ? 'max-w-[920px]' : 'max-w-[720px]';
 
   useEffect(() => {
     document.title = `סקר בשלות AI · שאלה ${idx + 1} מתוך ${total}`;
@@ -66,12 +74,16 @@ export default function QuestionPage() {
   }, [idx, navigate]);
 
   const goNext = useCallback(() => {
+    if (!isAnswered) {
+      setNote('יש להשלים את השאלה לפני שממשיכים.');
+      return;
+    }
     if (factForQuestion && !seenFacts.has(idx)) {
       setFactOpen(true);
       return;
     }
     performNavigation();
-  }, [factForQuestion, seenFacts, idx, performNavigation]);
+  }, [isAnswered, factForQuestion, seenFacts, idx, performNavigation]);
 
   const handleFactDismiss = useCallback(() => {
     setFactOpen(false);
@@ -105,6 +117,7 @@ export default function QuestionPage() {
 
   function handleChoice(q: Question, optionIndex: number) {
     if (q.type === 'single') {
+      setNote('');
       setAnswer(idx, optionIndex);
     } else if (q.type === 'multi') {
       const current = new Set((answer as MultiAnswer | undefined) ?? []);
@@ -123,6 +136,7 @@ export default function QuestionPage() {
 
   function handleMatrixSingle(promptIndex: number, choiceIndex: number) {
     const current = (answer as MatrixSingleAnswer | undefined) ?? {};
+    setNote('');
     setAnswer(idx, { ...current, [promptIndex]: choiceIndex });
   }
 
@@ -146,6 +160,39 @@ export default function QuestionPage() {
     }
     setNote('');
     setAnswer(idx, Array.from(current).sort());
+  }
+
+  function handleMatrixTableMulti(q: Question, rowIndex: number, columnIndex: number) {
+    if (q.type !== 'matrix-multi') return;
+    const optionKey = `${rowIndex}:${columnIndex}`;
+    const current = new Set((answer as MatrixMultiAnswer | undefined) ?? []);
+
+    if (current.has(optionKey)) {
+      current.delete(optionKey);
+      setNote('');
+      setAnswer(idx, Array.from(current).sort());
+      return;
+    }
+
+    const next = new Set(current);
+    const rowPrefix = `${rowIndex}:`;
+    current.forEach((k) => {
+      if (k.startsWith(rowPrefix)) next.delete(k);
+    });
+
+    const max = q.maxPerColumn;
+    if (max !== undefined) {
+      let countInColumn = 0;
+      next.forEach((k) => { if (k.endsWith(`:${columnIndex}`)) countInColumn += 1; });
+      if (countInColumn >= max) {
+        setNote(`ניתן לבחור עד ${max} חסמים בכל עמודה.`);
+        return;
+      }
+    }
+
+    next.add(optionKey);
+    setNote('');
+    setAnswer(idx, Array.from(next).sort());
   }
 
   function renderQuestionBody() {
@@ -181,6 +228,20 @@ export default function QuestionPage() {
       const prompts = orientation === 'row' ? question.rows : question.columns;
       const choices = orientation === 'row' ? question.columns : question.rows;
       const promptLabel = orientation === 'row' ? 'שורה' : 'טווח זמן';
+
+      if (usesMatrixTable) {
+        return (
+          <MatrixTable
+            rows={prompts}
+            columns={choices}
+            role="radio"
+            ariaLabel={question.title}
+            isChecked={(promptIndex, choiceIndex) => saved[promptIndex] === choiceIndex}
+            onSelect={handleMatrixSingle}
+          />
+        );
+      }
+
       return (
         <div className="matrix-list">
           {prompts.map((prompt, promptIndex) => (
@@ -209,6 +270,19 @@ export default function QuestionPage() {
 
     // matrix-multi
     const saved = new Set((answer as MatrixMultiAnswer | undefined) ?? []);
+    if (usesMatrixTable) {
+      return (
+        <MatrixTable
+          rows={question.rows}
+          columns={question.columns}
+          role="checkbox"
+          ariaLabel={question.title}
+          isChecked={(rowIndex, columnIndex) => saved.has(`${rowIndex}:${columnIndex}`)}
+          onSelect={(rowIndex, columnIndex) => handleMatrixTableMulti(question, rowIndex, columnIndex)}
+        />
+      );
+    }
+
     return (
       <div className="matrix-list">
         {question.rows.map((rowLabel, rowIndex) => (
@@ -247,11 +321,11 @@ export default function QuestionPage() {
   return (
     <>
       <Link to="/" className="survey-demo-logo fixed top-5 left-5 sm:top-6 sm:left-6 z-20 inline-flex" aria-label="Deloitte">
-        <img src="/Deloitte-Master-Logo-Black-RGB.png" alt="Deloitte" className="h-10 sm:h-12 lg:h-16 w-auto" />
+        <img src="/Deloitte-Master-Logo-Black-RGB.png" alt="Deloitte" className="h-12 sm:h-14 lg:h-16 w-auto" />
       </Link>
 
       <main className="survey-demo-main flex-1 min-h-[600px] w-full px-5 sm:px-8 py-8 sm:py-12 pb-32 flex items-start justify-center">
-        <section className="w-full max-w-[720px]">
+        <section className={`w-full ${contentMaxWidthClass}`}>
           <div className="mb-7">
             <div className="flex items-center justify-between gap-5 text-xs text-[#6B7280] mb-2">
               <span className="min-w-0 truncate">{renderInline(question.section)}</span>
@@ -271,13 +345,13 @@ export default function QuestionPage() {
       </main>
 
       <footer className="fixed bottom-0 inset-x-0 no-card-footer">
-        <div className="mx-auto max-w-[720px] px-5 sm:px-0 py-3 flex items-center justify-between gap-3">
+        <div className={`mx-auto ${contentMaxWidthClass} px-5 sm:px-0 py-3 flex items-center justify-between gap-3`}>
           <button type="button" className="btn-ghost text-sm sm:text-base" onClick={goPrevious}>
             {idx === 0 ? '→ לפתיחה' : '→ הקודם'}
           </button>
           <div className="hidden sm:flex items-center gap-3 text-xs text-[#6B7280]">{shortcutHint}</div>
           <div className="flex items-center gap-2">
-            <button type="button" className="btn-accent text-sm sm:text-base" onClick={goNext}>
+            <button type="button" className="btn-accent text-sm sm:text-base" onClick={goNext} disabled={!isAnswered}>
               {isLast ? 'סיום ←' : 'הבא ←'}
             </button>
           </div>

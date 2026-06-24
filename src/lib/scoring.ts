@@ -150,10 +150,10 @@ export function computeScore(answers: AnswersMap): ScoreResult {
   // When no answers exist, default to Level 1 (Exploring).
   const level = allScores.length === 0 ? MATURITY_LEVELS[0] : levelForScore(average);
 
-  const facts = FACTS.filter((f) => {
-    const answerIndex = f.summaryQuestionIndex ?? f.questionIndex;
-    return f.shouldShow ? f.shouldShow(answers[`q${answerIndex + 1}`]) : true;
-  });
+  // All global benchmarks are surfaced on every Summary page regardless of
+  // the user's individual answers. `Fact.shouldShow` is still consulted by
+  // the per-question `FactModal`, but no longer filters the Summary list.
+  const facts = FACTS;
 
   return { average, count: allScores.length, level, facts, perQuestion };
 }

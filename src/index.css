@@ -73,8 +73,24 @@ body {
       linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(239, 244, 229, 0.45)),
       #f5f7ef;
   }
+  .welcome-body::after {
+    content: ''; position: fixed; top: 0; left: 0; right: 0; height: 6rem; z-index: 10; pointer-events: none;
+    background: linear-gradient(180deg, rgba(245, 247, 239, 0.68), rgba(245, 247, 239, 0.34) 72%, rgba(245, 247, 239, 0));
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 100%);
+  }
+  @media (min-width: 640px) {
+    .welcome-body::after { height: 7rem; }
+  }
   .welcome-body .welcome-content-col { background: transparent; }
   .welcome-body .welcome-image-col { display: none; }
+  .welcome-body .welcome-main { padding-top: 7.5rem; }
+
+  @media (min-width: 640px) {
+    .welcome-body .welcome-main { padding-top: 8rem; }
+  }
 }
 
 /* ----- Survey body ----- */
@@ -89,6 +105,16 @@ body {
     linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(239, 244, 229, 0.45)),
     #f5f7ef;
 }
+.survey-demo-body::after {
+  content: ''; position: fixed; top: 0; left: 0; right: 0; height: 8rem; z-index: 10; pointer-events: none;
+  background: linear-gradient(180deg, rgba(245, 247, 239, 0.68), rgba(245, 247, 239, 0.34) 72%, rgba(245, 247, 239, 0));
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 100%);
+}
+@media (max-width: 1023px) { .survey-demo-body::after { height: 7.25rem; } }
+@media (max-width: 640px)  { .survey-demo-body::after { height: 6.5rem; } }
 .no-card-footer {
   background: linear-gradient(180deg, rgba(245, 247, 239, 0), rgba(245, 247, 239, 0.92) 28%, rgba(245, 247, 239, 0.98));
   backdrop-filter: blur(8px);
@@ -156,6 +182,86 @@ body {
 }
 .matrix-option-label { font-size: 0.82rem; line-height: 1.45; }
 
+.matrix-table-region { width: 100%; }
+.matrix-table-shell {
+  overflow: hidden;
+  border: 1px solid rgba(26, 26, 26, 0.12);
+  border-radius: 14px;
+  background: rgba(254, 255, 251, 0.95);
+}
+.matrix-answer-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.matrix-answer-table th,
+.matrix-answer-table td { border-inline-start: 1px solid rgba(26, 26, 26, 0.09); }
+.matrix-answer-table th:first-child,
+.matrix-answer-table td:first-child { border-inline-start: 0; }
+.matrix-answer-table thead th {
+  min-height: 58px;
+  padding: 12px 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: center;
+  vertical-align: bottom;
+  background: rgba(241, 242, 244, 0.54);
+}
+.matrix-table-corner,
+.matrix-table-row-label { width: 30%; }
+.matrix-answer-table tbody tr { border-top: 1px solid rgba(26, 26, 26, 0.09); }
+.matrix-answer-table tbody tr:nth-child(even) { background: rgba(247, 247, 245, 0.58); }
+.matrix-table-row-label {
+  padding: 14px 16px;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.55;
+  text-align: start;
+  vertical-align: middle;
+}
+.matrix-table-cell {
+  height: 58px;
+  padding: 8px;
+  text-align: center;
+  vertical-align: middle;
+}
+.matrix-table-choice {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.matrix-table-choice:hover { background-color: rgba(134, 188, 37, 0.08); }
+.matrix-table-choice[aria-checked="true"] {
+  border-color: rgba(134, 188, 37, 0.28);
+  background-color: rgba(244, 249, 234, 0.92);
+  box-shadow: none;
+}
+.matrix-mobile-list { display: none; }
+.matrix-mobile-row { border-top: 1px solid rgba(26, 26, 26, 0.12); padding-top: 14px; }
+.matrix-mobile-row:first-child { border-top: 0; padding-top: 0; }
+.matrix-mobile-options { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.matrix-mobile-option {
+  min-height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(254, 255, 251, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-align: start;
+}
+
 .kbd-badge {
   font-family: 'Open Sans Hebrew', system-ui, sans-serif;
   width: 28px; height: 28px; border-radius: 6px;
@@ -211,10 +317,12 @@ body {
 @media (max-width: 640px) {
   .matrix-choice-grid,
   .matrix-choice-grid--compact { grid-template-columns: 1fr; }
+  .matrix-table-shell { display: none; }
+  .matrix-mobile-list { display: grid; gap: 14px; }
 }
 
 /* ===== Summary styles ===== */
-.summary-main { display: flex; flex-direction: column; gap: 2rem; }
+.summary-main { display: flex; flex-direction: column; gap: 2rem; padding-bottom: 6rem; }
 .summary-section { padding: 1.5rem 0 0; border-top: 1px solid rgba(26, 26, 26, 0.12); }
 .summary-section-head { margin-bottom: 1rem; }
 .summary-section-title { font-size: 1.05rem; font-weight: 700; color: var(--ink); margin-bottom: 0.2rem; line-height: 1.45; }
@@ -263,6 +371,13 @@ body {
 .stage-line { flex: 1; height: 2px; background: #DDE1D6; border-radius: 999px; margin-bottom: 1.1rem; }
 
 .implication-list, .fact-list, .expert-grid { display: grid; gap: 0.75rem; }
+.fact-list {
+  /* Two-column grid on tablet/desktop, single column on mobile. */
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .fact-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 .implication-item {
   display: flex; gap: 0.85rem; align-items: flex-start;
   padding: 1rem; font-size: 0.92rem; line-height: 1.7;
@@ -275,6 +390,66 @@ body {
 }
 .fact-emoji { font-size: 1.5rem; line-height: 1.2; flex-shrink: 0; }
 .fact-q { font-size: 0.7rem; font-weight: 700; color: var(--muted); display: block; margin-bottom: 0.25rem; }
+
+/* Summary stat card — large headline figure + caption with a soft-tinted
+   Heroicon tile. Used by the global benchmarks grid on the Summary page. */
+.stat-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 1.1rem 1.25rem;
+  background: #FEFFFB;
+}
+.stat-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.stat-figure {
+  font-size: clamp(1.85rem, 6vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.stat-caption {
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--muted);
+  margin: 0;
+}
+.stat-icon-tile {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-start: auto;
+  background: var(--tile-bg, #F1F2F4);
+  color: var(--tile-fg, var(--ink));
+}
+.stat-icon-svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Soft pastel palettes for the 9 benchmark cards. Each pairs a very light
+   tint background with a saturated stroke color for the icon. */
+.stat-card.palette-1 { --tile-bg: #FFE4E6; --tile-fg: #E11D48; } /* rose */
+.stat-card.palette-2 { --tile-bg: #E0E7FF; --tile-fg: #4F46E5; } /* indigo */
+.stat-card.palette-3 { --tile-bg: #FEF3C7; --tile-fg: #D97706; } /* amber */
+.stat-card.palette-4 { --tile-bg: #D1FAE5; --tile-fg: #059669; } /* emerald */
+.stat-card.palette-5 { --tile-bg: #E0F2FE; --tile-fg: #0284C7; } /* sky */
+.stat-card.palette-6 { --tile-bg: #EDE9FE; --tile-fg: #7C3AED; } /* violet */
+.stat-card.palette-7 { --tile-bg: #CCFBF1; --tile-fg: #0D9488; } /* teal */
+.stat-card.palette-8 { --tile-bg: #FFEDD5; --tile-fg: #EA580C; } /* orange */
+.stat-card.palette-9 { --tile-bg: #ECFCCB; --tile-fg: #65A30D; } /* lime */
+
 
 /* Fun-fact popup shown on selected question pages. */
 .fact-modal-overlay {
@@ -343,10 +518,13 @@ body {
   display: flex; flex-direction: row; gap: 0.85rem; align-items: flex-start;
 }
 .expert-avatar {
-  width: 44px; height: 44px;
-  border-radius: 10px; background: #F1F2F4; color: var(--ink);
-  display: inline-flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 0.95rem; flex-shrink: 0;
+  width: 64px; height: 64px;
+  border-radius: 999px; background: #F1F2F4;
+  overflow: hidden; flex-shrink: 0;
+}
+.expert-avatar-img {
+  width: 100%; height: 100%;
+  display: block; object-fit: cover;
 }
 .expert-name { font-weight: 700; font-size: 0.95rem; line-height: 1.45; }
 .expert-role { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }

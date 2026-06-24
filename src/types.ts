@@ -73,6 +73,22 @@ export interface MaturityLevel {
   implications: string[];
 }
 
+/**
+ * Token identifying which Heroicon to render in a Summary stat card.
+ * The mapping to the actual icon component lives in `StatCard.tsx` so
+ * the data file remains free of React imports.
+ */
+export type FactIcon =
+  | 'chart'
+  | 'bolt'
+  | 'rocket'
+  | 'cash'
+  | 'refresh'
+  | 'users'
+  | 'cpu'
+  | 'bulb'
+  | 'sparkles';
+
 export interface Fact {
   /** Zero-based question index in the survey array */
   questionIndex: number;
@@ -82,6 +98,12 @@ export interface Fact {
   title: string;
   emoji: string;
   text: string;
+  /** Headline figure rendered in the Summary stat card (e.g. "74%", "×3.2"). */
+  stat: string;
+  /** One-line Hebrew caption rendered under the stat figure on the Summary card. */
+  caption: string;
+  /** Heroicon token used by the Summary stat card. */
+  icon: FactIcon;
   /**
    * Optional predicate used by the Summary page to decide whether to
    * surface this fact based on the user's answer. The question-page popup

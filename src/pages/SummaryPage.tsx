@@ -1,30 +1,38 @@
 import { useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAnswers } from '../state/AnswersContext';
 import { computeScore, MATURITY_LEVELS } from '../lib/scoring';
 import { SUMMARY_EXPERTS } from '../data/levels';
-import { surveyQuestions } from '../data/questions';
 import { renderInline } from '../lib/inline';
+import StatCard from '../components/StatCard';
 
-function initials(name: string): string {
-  return name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((p) => p[0])
-    .join('');
-}
+const EXPERT_IMAGES: Record<string, string> = {
+  'rodolev@deloitte.co.il': '/dolevrotem.webp',
+  'tkochav@deloitte.co.il': '/tovi-kochav.webp',
+};
 
 export default function SummaryPage() {
   const { answers, resetSurvey } = useAnswers();
   const result = useMemo(() => computeScore(answers), [answers]);
-  const { level, average, count, facts } = result;
+  let { level, average, count } = result;
+  const { facts } = result;
+
+  // TODO REMOVE: stakeholder preview — allow ?level=1..5 to preview each summary state.
+  const [searchParams] = useSearchParams();
+  const previewParam = Number(searchParams.get('level'));
+  if (Number.isInteger(previewParam) && previewParam >= 1 && previewParam <= 5) {
+    const previewLevel = MATURITY_LEVELS[previewParam - 1];
+    level = previewLevel;
+    average = (previewLevel.range[0] + previewLevel.range[1]) / 2;
+    count = 1;
+  }
+  // END TODO REMOVE
 
   useEffect(() => {
-    document.title = `סקר בשלות AI · ${level.nameHe}`;
+    document.title = `AI Maturity Survey · ${level.nameEn}`;
     document.body.classList.add('survey-demo-body');
     return () => document.body.classList.remove('survey-demo-body');
-  }, [level.nameHe]);
+  }, [level.nameEn]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -33,10 +41,10 @@ export default function SummaryPage() {
   return (
     <>
       <Link to="/" className="survey-demo-logo fixed top-5 left-5 sm:top-6 sm:left-6 z-20 inline-flex" aria-label="Deloitte">
-        <img src="/Deloitte-Master-Logo-Black-RGB.png" alt="Deloitte" className="h-10 sm:h-12 lg:h-16 w-auto" />
+        <img src="/Deloitte-Master-Logo-Black-RGB.png" alt="Deloitte" className="h-12 sm:h-14 lg:h-16 w-auto" />
       </Link>
 
-      <main className="survey-demo-main flex-1 min-h-[600px] w-full px-5 sm:px-8 py-8 sm:py-12 pb-32 flex items-start justify-center">
+      <main className="survey-demo-main flex-1 min-h-[600px] w-full px-5 sm:px-8 py-8 sm:py-12 pb-48 flex items-start justify-center">
         <section className="w-full max-w-[720px] summary-main">
           {/* Hero */}
           <section className="summary-hero">
@@ -50,9 +58,8 @@ export default function SummaryPage() {
               </div>
             </div>
 
-            <p className="text-xs text-[#6B7280] font-semibold mb-1 font-latin">{level.nameEn}</p>
             <h1 className="text-2xl sm:text-3xl font-bold leading-snug mb-3">
-              התוצאה שלך: <span>{level.nameHe}</span>
+              <span className="font-latin">{level.nameEn}</span>
             </h1>
             <div className="score-figure">
               <span className="score-num font-latin">{count > 0 ? average.toFixed(2) : '—'}</span>
@@ -83,47 +90,30 @@ export default function SummaryPage() {
             </div>
           </section>
 
-          {/* Implications */}
+          {/* Implications section removed: stage-level descriptions were
+              generic and could not honestly assert characteristics of the
+              user's organization. Global benchmarks fill this role now. */}
+
+          {/* Global benchmarks — always shown, in question-index order. */}
           <section className="summary-section">
             <div className="summary-section-head">
-              <h2 className="summary-section-title">מה זה אומר עבורכם</h2>
-              <p className="summary-section-sub">המאפיינים המרכזיים של ארגונים בשלב זה.</p>
+              <h2 className="summary-section-title">בנצ'מרק עולמי · Deloitte 2026</h2>
+              <p className="summary-section-sub">
+                מספרים נבחרים מהסקר העולמי של Deloitte לשנת 2026.
+              </p>
             </div>
-            <ul className="implication-list">
-              {level.implications.map((t, i) => (
-                <li key={i} className="option-card surface-card implication-item">
-                  <span className="kbd-badge font-latin" aria-hidden="true">{i + 1}</span>
-                  <span>{renderInline(t)}</span>
-                </li>
+            <div className="fact-list">
+              {facts.map((f, i) => (
+                <StatCard
+                  key={f.questionIndex}
+                  stat={f.stat}
+                  caption={f.caption}
+                  icon={f.icon}
+                  palette={(i % 9) + 1}
+                />
               ))}
-            </ul>
+            </div>
           </section>
-
-          {/* Facts (only when below global benchmark) */}
-          {facts.length > 0 && (
-            <section className="summary-section">
-              <div className="summary-section-head">
-                <h2 className="summary-section-title">בנצ'מרק עולמי · Deloitte 2026</h2>
-                <p className="summary-section-sub">
-                  על בסיס תשובותיך, אלו הנתונים העולמיים שכדאי להכיר — מקומות בהם הארגון נמצא מתחת לבנצ'מרק.
-                </p>
-              </div>
-              <div className="fact-list">
-                {facts.map((f) => {
-                  const q = surveyQuestions[f.questionIndex];
-                  return (
-                    <div key={f.questionIndex} className="option-card surface-card fact-item">
-                      <span className="fact-emoji" aria-hidden="true">{f.emoji}</span>
-                      <div>
-                        <span className="fact-q">{`שאלה ${f.questionIndex + 1} · ${q.title}`}</span>
-                        <p>{renderInline(f.text)}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          )}
 
           {/* Experts */}
           <section className="summary-section">
@@ -134,7 +124,9 @@ export default function SummaryPage() {
             <div className="expert-grid">
               {SUMMARY_EXPERTS.map((e) => (
                 <div key={e.email} className="option-card surface-card expert-card">
-                  <div className="expert-avatar" aria-hidden="true">{initials(e.name)}</div>
+                  <div className="expert-avatar">
+                    <img className="expert-avatar-img" src={EXPERT_IMAGES[e.email]} alt={e.name} />
+                  </div>
                   <div className="expert-meta">
                     <div className="expert-name">{e.name}</div>
                     <div className="expert-role">{e.role}</div>
@@ -144,15 +136,6 @@ export default function SummaryPage() {
               ))}
             </div>
           </section>
-
-          <p className="summary-footnote">
-            סיכום זה הופק אוטומטית על בסיס תשובותיכם בסקר. הנתונים נשמרים מקומית על המכשיר שלך.
-            להרחבה על שירותי <span className="font-latin">Deloitte</span> לקראת עידן ה-<span className="font-latin">AI</span>:
-            {' '}
-            <a className="underline" target="_blank" rel="noopener" href="https://www.deloitte.com/il/he/what-we-do/Own-Tomorrow-With-Deloitte.html">
-              Own Tomorrow With Deloitte
-            </a>.
-          </p>
         </section>
       </main>
 

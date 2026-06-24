@@ -16,7 +16,7 @@ export default function WelcomePage() {
   return (
     <>
       <a href="/" className="welcome-mobile-logo fixed top-5 left-5 z-20 inline-flex lg:hidden" aria-label="Deloitte">
-        <img src="/Deloitte-Master-Logo-Black-RGB.png" alt="Deloitte" className="h-10 sm:h-12 w-auto" />
+        <img src="/Deloitte-Master-Logo-Black-RGB.png" alt="Deloitte" className="h-12 sm:h-14 w-auto" />
       </a>
       <div className="welcome-layout min-h-screen w-full grid grid-cols-1 lg:grid-cols-2" dir="ltr">
         <aside className="welcome-image-col relative hidden lg:block bg-[#0F0F0F] overflow-hidden" dir="rtl">
@@ -57,6 +57,23 @@ export default function WelcomePage() {
                 כלל התשובות נשמרות באופן מקומי על המכשיר שלך וישמשו לצורכי מחקר וניתוח מצרפי בלבד.
                 בכל שאלה, אנא בחר/י את האפשרות המשקפת בצורה המדויקת ביותר את המצב בארגון שלך כיום.
               </p>
+
+              {/* TODO REMOVE: stakeholder preview — quick links to each summary level. */}
+              <div className="mt-6 pt-4 border-t border-dashed border-[#E5E5E5]">
+                <p className="text-xs text-[#6B7280] mb-2 font-latin">Preview summary pages (dev only):</p>
+                <div className="flex flex-wrap gap-2">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <Link
+                      key={n}
+                      to={`/summary?level=${n}`}
+                      className="btn-ghost text-sm font-latin"
+                    >
+                      L{n}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              {/* END TODO REMOVE */}
             </div>
           </main>
         </section>

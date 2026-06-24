@@ -6,7 +6,7 @@ export const MATURITY_LEVELS: MaturityLevel[] = [
   {
     id: 1,
     nameHe: 'בוחנים ראשוניים',
-    nameEn: 'Level 1 — Exploring',
+    nameEn: 'Level 1 - Exploring',
     range: [1.0, 1.8],
     shortDesc: 'ארגונים בשלבי בחינה ראשוניים',
     positioning:
@@ -20,7 +20,7 @@ export const MATURITY_LEVELS: MaturityLevel[] = [
   {
     id: 2,
     nameHe: 'מתנסים',
-    nameEn: 'Level 2 — Experimenting',
+    nameEn: 'Level 2 - Experimenting',
     range: [1.81, 2.6],
     shortDesc: 'ארגונים בשלבי ניסוי והוכחת היתכנות',
     positioning:
@@ -34,7 +34,7 @@ export const MATURITY_LEVELS: MaturityLevel[] = [
   {
     id: 3,
     nameHe: 'מתרחבים',
-    nameEn: 'Level 3 — Scaling',
+    nameEn: 'Level 3 - Scaling',
     range: [2.61, 3.4],
     shortDesc: 'ארגונים המרחיבים AI בקנה מידה ארגוני',
     positioning:
@@ -48,7 +48,7 @@ export const MATURITY_LEVELS: MaturityLevel[] = [
   {
     id: 4,
     nameHe: 'מטמיעים',
-    nameEn: 'Level 4 — Operationalizing',
+    nameEn: 'Level 4 - Operationalizing',
     range: [3.41, 4.2],
     shortDesc: 'ארגונים שבהם AI מהווה חלק אינטגרלי מהפעילות',
     positioning:
@@ -62,7 +62,7 @@ export const MATURITY_LEVELS: MaturityLevel[] = [
   {
     id: 5,
     nameHe: 'AI-First Enterprise',
-    nameEn: 'Level 5 — AI-First Enterprise',
+    nameEn: 'Level 5 - AI-First Enterprise',
     range: [4.21, 5.0],
     shortDesc: 'ארגונים שבהם AI מהווה מנוע ליבה עסקי וארגוני',
     positioning:

@@ -61,7 +61,7 @@ export default function FactModal({ open, title, text, onClose }: FactModalProps
         >
           ×
         </button>
-        <p className="fact-modal-kicker">ידעת?</p>
+        <p className="fact-modal-kicker">הידעת?</p>
         <h2 id="fact-modal-title" className="fact-modal-title">{renderInline(title)}</h2>
         <p className="fact-modal-body">{renderInline(text)}</p>
         <div className="fact-modal-actions">
