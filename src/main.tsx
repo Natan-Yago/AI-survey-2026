@@ -1,10 +1,15 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
-import { registerSW } from 'virtual:pwa-register';
 import App from './App';
 import { AnswersProvider } from './state/AnswersContext';
 import './index.css';
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    registrations.forEach((registration) => registration.unregister());
+  });
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -15,6 +20,3 @@ createRoot(document.getElementById('root')!).render(
     </HashRouter>
   </StrictMode>,
 );
-
-// Register the service worker; auto-updates without prompting the user.
-registerSW({ immediate: true });
