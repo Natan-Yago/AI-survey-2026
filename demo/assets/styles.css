@@ -1,0 +1,369 @@
+/* AI Survey — shared styles */
+
+@import url('https://fonts.googleapis.com/earlyaccess/opensanshebrew.css');
+
+:root {
+  --deloitte-green: #86BC25;
+  --deloitte-green-dark: #6FA01D;
+  --ink: #1A1A1A;
+  --muted: #6B7280;
+  --bg: #F7F7F5;
+  --surface: #FFFFFF;
+  --border: #E5E5E5;
+}
+
+html {
+  font-family: 'Open Sans Hebrew', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-feature-settings: 'kern' 1, 'liga' 1;
+}
+
+.welcome-content-col {
+  background:
+    radial-gradient(circle at top right, rgba(134, 188, 37, 0.16), rgba(134, 188, 37, 0) 34rem),
+    radial-gradient(circle at bottom left, rgba(134, 188, 37, 0.1), rgba(134, 188, 37, 0) 30rem),
+    #fff;
+}
+
+@media (max-width: 1023px) {
+  .welcome-body {
+    position: relative;
+    isolation: isolate;
+    background: #f5f7ef;
+  }
+
+  .welcome-body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at top right, rgba(134, 188, 37, 0.38), rgba(134, 188, 37, 0) 34rem),
+      radial-gradient(circle at bottom left, rgba(134, 188, 37, 0.26), rgba(134, 188, 37, 0) 30rem),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(239, 244, 229, 0.45)),
+      #f5f7ef;
+  }
+
+  .welcome-body .welcome-content-col {
+    background: transparent;
+  }
+
+  .welcome-body .welcome-image-col {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .welcome-body .welcome-layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .welcome-body .welcome-image-col {
+    display: block;
+  }
+
+  .welcome-body .welcome-mobile-logo,
+  .welcome-body .welcome-mobile-eyebrow {
+    display: none;
+  }
+}
+
+.survey-demo-body {
+  position: relative;
+  isolation: isolate;
+  background: #f5f7ef;
+}
+
+.survey-demo-body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at top right, rgba(134, 188, 37, 0.38), rgba(134, 188, 37, 0) 34rem),
+    radial-gradient(circle at bottom left, rgba(134, 188, 37, 0.26), rgba(134, 188, 37, 0) 30rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(239, 244, 229, 0.45)),
+    #f5f7ef;
+}
+
+.no-card-footer {
+  background: linear-gradient(180deg, rgba(245, 247, 239, 0), rgba(245, 247, 239, 0.92) 28%, rgba(245, 247, 239, 0.98));
+  backdrop-filter: blur(8px);
+}
+
+.survey-demo-body .survey-demo-main {
+  align-items: flex-start;
+  padding-top: 7.5rem;
+}
+
+@media (max-width: 1023px) {
+  .survey-demo-body .survey-demo-main {
+    padding-top: 9rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .survey-demo-body .survey-demo-main {
+    padding-top: 8rem;
+  }
+}
+
+/* Keep Latin tokens aligned with the site font */
+.font-latin {
+  font-family: 'Open Sans Hebrew', system-ui, sans-serif;
+}
+
+/* Focus ring — accessible, Deloitte green */
+*:focus-visible {
+  outline: 2px solid var(--deloitte-green);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Option card states */
+.option-card {
+  transition: border-color 150ms ease, background-color 150ms ease, transform 100ms ease, box-shadow 150ms ease;
+}
+.option-card:hover {
+  border-color: var(--deloitte-green);
+  background-color: #FBFCF8;
+}
+.option-card[aria-checked="true"] {
+  border-color: var(--deloitte-green);
+  background-color: #F4F9EA;
+  box-shadow: inset 0 0 0 1px var(--deloitte-green);
+}
+.option-card[aria-checked="true"] .option-radio {
+  border-color: var(--deloitte-green);
+  background-color: var(--deloitte-green);
+}
+.option-card[aria-checked="true"] .option-radio::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.option-radio {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #C9CDD3;
+  border-radius: 9999px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+.option-radio::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 9999px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.option-card[aria-checked="true"] .option-check {
+  border-color: var(--deloitte-green);
+  background-color: var(--deloitte-green);
+}
+.option-card[aria-checked="true"] .option-check::after {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
+}
+
+.option-check {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #C9CDD3;
+  border-radius: 6px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+.option-check::after {
+  content: '';
+  width: 6px;
+  height: 11px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  opacity: 0;
+  transform: rotate(45deg) scale(0.6);
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.matrix-list {
+  display: grid;
+  gap: 14px;
+}
+
+.matrix-row {
+  border-top: 1px solid rgba(26, 26, 26, 0.12);
+  padding-top: 14px;
+}
+
+.matrix-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.matrix-row-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+
+.matrix-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(142px, 1fr));
+  gap: 8px;
+}
+
+.matrix-choice-grid--compact {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.matrix-option {
+  min-height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-align: start;
+}
+
+.matrix-option-label {
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+/* Number badge for keyboard hint */
+.kbd-badge {
+  font-family: 'Open Sans Hebrew', system-ui, sans-serif;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: #F1F2F4;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.option-card[aria-checked="true"] .kbd-badge {
+  background: var(--deloitte-green);
+  color: #fff;
+}
+
+/* Progress bar */
+.progress-track {
+  height: 4px;
+  background: #ECECEA;
+  width: 100%;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--deloitte-green);
+  transition: width 300ms ease;
+}
+
+/* Primary button */
+.btn-primary {
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 12px;
+  transition: background 150ms ease, transform 100ms ease;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #000;
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.btn-primary:disabled {
+  background: #D4D4D4;
+  color: #9CA3AF;
+  cursor: not-allowed;
+}
+
+.btn-accent {
+  background: var(--deloitte-green);
+  color: #fff;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 12px;
+  transition: background 150ms ease, transform 100ms ease;
+}
+.btn-accent:hover:not(:disabled) {
+  background: var(--deloitte-green-dark);
+}
+.btn-accent:disabled {
+  background: #D4D4D4;
+  color: #9CA3AF;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  color: var(--ink);
+  font-weight: 500;
+  padding: 12px 20px;
+  border-radius: 12px;
+  transition: background 150ms ease;
+}
+.btn-ghost:hover {
+  background: #EFEFEC;
+}
+
+/* Keyboard hint chips */
+.kbd {
+  font-family: 'Open Sans Hebrew', system-ui, sans-serif;
+  font-size: 11px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  padding: 2px 6px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* RTL: ensure inline Latin tokens behave */
+[dir="rtl"] .num {
+  unicode-bidi: isolate;
+}
+
+/* Card */
+.surface-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+@media (max-width: 640px) {
+  .matrix-choice-grid,
+  .matrix-choice-grid--compact {
+    grid-template-columns: 1fr;
+  }
+}

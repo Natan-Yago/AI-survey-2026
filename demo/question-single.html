@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>סקר בשלות AI · שאלות הסקר</title>
+  <script src="assets/tailwind-config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body class="survey-demo-body min-h-screen flex flex-col">
+
+  <a href="index.html" class="survey-demo-logo fixed top-5 left-5 sm:top-6 sm:left-6 z-20 inline-flex" aria-label="Deloitte">
+    <img
+      src="Deloitte-Master-Logo-Black-RGB.png"
+      alt="Deloitte"
+      class="h-10 sm:h-12 lg:h-16 w-auto"
+    />
+  </a>
+
+  <main class="survey-demo-main flex-1 min-h-[600px] w-full px-5 sm:px-8 py-8 sm:py-12 pb-32 flex items-start justify-center">
+    <section class="w-full max-w-[720px]" data-survey-demo>
+      <div class="mb-7">
+        <div class="flex items-center justify-between gap-5 text-xs text-muted mb-2">
+          <span class="min-w-0 truncate" data-section>חלק ראשון: דמוגרפיה</span>
+          <span class="font-latin whitespace-nowrap">שאלה <span class="num" data-current-question>1</span> מתוך <span class="num" data-total-questions>32</span></span>
+        </div>
+        <div class="progress-track rounded-full">
+          <div class="progress-fill rounded-full" data-progress-fill></div>
+        </div>
+      </div>
+
+      <h1 class="text-xl sm:text-2xl font-bold leading-snug mb-3" data-question-title></h1>
+      <p class="text-sm text-muted leading-relaxed mb-6" data-question-instructions></p>
+
+      <div data-question-options></div>
+      <p class="text-xs text-muted mt-4 min-h-4" aria-live="polite" data-question-note></p>
+    </section>
+  </main>
+
+  <footer class="fixed bottom-0 inset-x-0 no-card-footer">
+    <div class="mx-auto max-w-[720px] px-5 sm:px-0 py-3 flex items-center justify-between gap-3">
+      <button type="button" class="btn-ghost text-sm sm:text-base" data-action="previous">→ הקודם</button>
+
+      <div class="hidden sm:flex items-center gap-3 text-xs text-muted" data-shortcut-hint>
+        <span>בחר/י עם <span class="kbd font-latin">1</span>–<span class="kbd font-latin">9</span></span>
+        <span class="text-border">·</span>
+        <span>המשך עם <span class="kbd font-latin">Enter</span></span>
+      </div>
+
+      <button type="button" class="btn-accent text-sm sm:text-base" data-action="next">
+        הבא ←
+      </button>
+    </div>
+  </footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>
