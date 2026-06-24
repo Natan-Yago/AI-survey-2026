@@ -16,6 +16,7 @@ import MatrixTable from '../components/MatrixTable';
 import FactModal from '../components/FactModal';
 import { FACT_BY_QUESTION_INDEX } from '../data/facts';
 
+const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 const MATRIX_TABLE_QUESTION_INDEXES = new Set([7, 9, 13, 16, 31]);
 
 function clampIndex(n: number): number {
@@ -321,7 +322,7 @@ export default function QuestionPage() {
   return (
     <>
       <Link to="/" className="survey-demo-logo fixed top-5 left-5 sm:top-6 sm:left-6 z-20 inline-flex" aria-label="Deloitte">
-        <img src="/Deloitte-Master-Logo-Black-RGB.png" alt="Deloitte" className="h-12 sm:h-14 lg:h-16 w-auto" />
+        <img src={assetUrl('Deloitte-Master-Logo-Black-RGB.png')} alt="Deloitte" className="h-12 sm:h-14 lg:h-16 w-auto" />
       </Link>
 
       <main className="survey-demo-main flex-1 min-h-[600px] w-full px-5 sm:px-8 py-8 sm:py-12 pb-32 flex items-start justify-center">

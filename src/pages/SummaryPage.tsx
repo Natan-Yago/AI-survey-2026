@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAnswers } from '../state/AnswersContext';
 import { computeScore, MATURITY_LEVELS } from '../lib/scoring';
 import { SUMMARY_EXPERTS } from '../data/levels';
@@ -7,26 +7,17 @@ import { renderInline } from '../lib/inline';
 import StatCard from '../components/StatCard';
 
 const EXPERT_IMAGES: Record<string, string> = {
-  'rodolev@deloitte.co.il': '/dolevrotem.webp',
-  'tkochav@deloitte.co.il': '/tovi-kochav.webp',
+  'rodolev@deloitte.co.il': 'dolevrotem.webp',
+  'tkochav@deloitte.co.il': 'tovi-kochav.webp',
 };
+
+const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 
 export default function SummaryPage() {
   const { answers, resetSurvey } = useAnswers();
   const result = useMemo(() => computeScore(answers), [answers]);
-  let { level, average, count } = result;
+  const { level, average, count } = result;
   const { facts } = result;
-
-  // TODO REMOVE: stakeholder preview — allow ?level=1..5 to preview each summary state.
-  const [searchParams] = useSearchParams();
-  const previewParam = Number(searchParams.get('level'));
-  if (Number.isInteger(previewParam) && previewParam >= 1 && previewParam <= 5) {
-    const previewLevel = MATURITY_LEVELS[previewParam - 1];
-    level = previewLevel;
-    average = (previewLevel.range[0] + previewLevel.range[1]) / 2;
-    count = 1;
-  }
-  // END TODO REMOVE
 
   useEffect(() => {
     document.title = `AI Maturity Survey · ${level.nameEn}`;
@@ -41,7 +32,7 @@ export default function SummaryPage() {
   return (
     <>
       <Link to="/" className="survey-demo-logo fixed top-5 left-5 sm:top-6 sm:left-6 z-20 inline-flex" aria-label="Deloitte">
-        <img src="/Deloitte-Master-Logo-Black-RGB.png" alt="Deloitte" className="h-12 sm:h-14 lg:h-16 w-auto" />
+        <img src={assetUrl('Deloitte-Master-Logo-Black-RGB.png')} alt="Deloitte" className="h-12 sm:h-14 lg:h-16 w-auto" />
       </Link>
 
       <main className="survey-demo-main flex-1 min-h-[600px] w-full px-5 sm:px-8 py-8 sm:py-12 pb-48 flex items-start justify-center">
@@ -125,7 +116,7 @@ export default function SummaryPage() {
               {SUMMARY_EXPERTS.map((e) => (
                 <div key={e.email} className="option-card surface-card expert-card">
                   <div className="expert-avatar">
-                    <img className="expert-avatar-img" src={EXPERT_IMAGES[e.email]} alt={e.name} />
+                    <img className="expert-avatar-img" src={assetUrl(EXPERT_IMAGES[e.email])} alt={e.name} />
                   </div>
                   <div className="expert-meta">
                     <div className="expert-name">{e.name}</div>
