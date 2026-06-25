@@ -21,17 +21,8 @@ export default function WelcomePage() {
         <img src={assetUrl('Deloitte-Master-Logo-Black-RGB.png')} alt="Deloitte" className="h-12 sm:h-14 w-auto" />
       </Link>
       <div className="welcome-layout min-h-screen w-full grid grid-cols-1 lg:grid-cols-2" dir="ltr">
-        <aside className="welcome-image-col relative hidden lg:block bg-[#0F0F0F] overflow-hidden" dir="rtl">
-          <img src={assetUrl('new-hero-image.jpg')} alt="" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent"></div>
-          <Link to="/" className="absolute top-8 left-8 z-10 inline-flex" aria-label="Deloitte">
-            <img src={assetUrl('Deloitte-Master-Logo-Black-RGB.png')} alt="Deloitte" className="h-20 w-auto" />
-          </Link>
-          <div className="absolute bottom-8 right-8 left-8 text-white" dir="rtl">
-            <p className="text-white/85 text-sm max-w-sm leading-relaxed">
-              מפת הבשלות והאימוץ של בינה מלאכותית בארגונים בישראל.
-            </p>
-          </div>
+        <aside className="welcome-image-col relative hidden lg:flex bg-[#74E796] overflow-hidden items-center justify-center" dir="rtl">
+          <img src={assetUrl('new-hero-image.jpg')} alt="" className="w-full h-full object-contain" />
         </aside>
 
         <section className="welcome-content-col flex flex-col min-h-screen" dir="rtl">
