@@ -22,7 +22,7 @@ export default function WelcomePage() {
       </Link>
       <div className="welcome-layout min-h-screen w-full grid grid-cols-1 lg:grid-cols-2" dir="ltr">
         <aside className="welcome-image-col relative hidden lg:block bg-[#0F0F0F] overflow-hidden" dir="rtl">
-          <img src={assetUrl('welcome-img.png')} alt="" className="absolute inset-0 w-full h-full object-cover" />
+          <img src={assetUrl('new-hero-image.jpg')} alt="" className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent"></div>
           <Link to="/" className="absolute top-8 left-8 z-10 inline-flex" aria-label="Deloitte">
             <img src={assetUrl('Deloitte-Master-Logo-Black-RGB.png')} alt="Deloitte" className="h-20 w-auto" />
