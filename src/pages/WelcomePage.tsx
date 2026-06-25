@@ -20,6 +20,9 @@ export default function WelcomePage() {
       <Link to="/" className="welcome-mobile-logo fixed top-5 left-5 z-20 inline-flex lg:hidden" aria-label="Deloitte">
         <img src={assetUrl('Deloitte-Master-Logo-Black-RGB.png')} alt="Deloitte" className="h-12 sm:h-14 w-auto" />
       </Link>
+      <Link to="/" className="welcome-desktop-logo fixed top-6 left-6 z-20 hidden lg:inline-flex" aria-label="Deloitte">
+        <img src={assetUrl('Deloitte-Master-Logo-Black-RGB.png')} alt="Deloitte" className="h-14 xl:h-16 w-auto" />
+      </Link>
       <div className="welcome-layout min-h-screen w-full grid grid-cols-1" dir="ltr">
         <aside className="welcome-image-col relative hidden lg:flex bg-[#74E796] overflow-hidden items-center justify-center" dir="rtl">
           <img src={assetUrl('new-hero-image.jpg')} alt="" className="w-full h-full object-contain" />
