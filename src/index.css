@@ -62,6 +62,31 @@ body {
     linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(239, 244, 229, 0.45)),
     #f5f7ef;
 }
+@media (min-width: 1024px) {
+  .welcome-layout {
+    height: 100svh;
+    min-height: 0;
+    overflow: hidden;
+    grid-template-columns: minmax(20rem, min(36vw, 80svh)) minmax(0, 1fr);
+  }
+  .welcome-image-col,
+  .welcome-content-col {
+    height: 100svh;
+    min-height: 0;
+  }
+  .welcome-main {
+    min-height: 0;
+    overflow: hidden;
+  }
+  .welcome-copy {
+    max-height: calc(100svh - 3rem);
+  }
+}
+@media (min-width: 1280px) {
+  .welcome-layout {
+    grid-template-columns: minmax(22rem, min(38vw, 80svh)) minmax(0, 1fr);
+  }
+}
 @media (max-width: 1023px) {
   .welcome-body { position: relative; isolation: isolate; background: #f5f7ef; }
   .welcome-body::before {
