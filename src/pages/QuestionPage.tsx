@@ -364,6 +364,8 @@ export default function QuestionPage() {
           open={factOpen}
           title={factForQuestion.title}
           text={factForQuestion.text}
+          icon={factForQuestion.icon}
+          palette={factForQuestion.palette}
           onClose={handleFactDismiss}
         />
       )}

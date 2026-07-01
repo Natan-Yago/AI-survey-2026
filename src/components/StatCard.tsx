@@ -1,28 +1,5 @@
-import {
-  ArrowPathIcon,
-  ArrowTrendingUpIcon,
-  BanknotesIcon,
-  BoltIcon,
-  CpuChipIcon,
-  LightBulbIcon,
-  RocketLaunchIcon,
-  SparklesIcon,
-  UserGroupIcon,
-} from '@heroicons/react/24/outline';
-import type { ComponentType, SVGProps } from 'react';
 import type { FactIcon } from '../types';
-
-const ICONS: Record<FactIcon, ComponentType<SVGProps<SVGSVGElement>>> = {
-  chart: ArrowTrendingUpIcon,
-  bolt: BoltIcon,
-  rocket: RocketLaunchIcon,
-  cash: BanknotesIcon,
-  refresh: ArrowPathIcon,
-  users: UserGroupIcon,
-  cpu: CpuChipIcon,
-  bulb: LightBulbIcon,
-  sparkles: SparklesIcon,
-};
+import { FACT_ICON_COMPONENTS } from '../lib/factIcons';
 
 interface StatCardProps {
   stat: string;
@@ -33,7 +10,7 @@ interface StatCardProps {
 }
 
 export default function StatCard({ stat, caption, icon, palette }: StatCardProps) {
-  const Icon = ICONS[icon];
+  const Icon = FACT_ICON_COMPONENTS[icon];
   return (
     <div className={`option-card surface-card stat-card palette-${palette}`}>
       <div className="stat-body">

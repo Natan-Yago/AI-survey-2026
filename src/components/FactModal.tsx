@@ -1,15 +1,29 @@
 import { useEffect, useRef } from 'react';
 import { renderInline } from '../lib/inline';
+import { FACT_ICON_COMPONENTS } from '../lib/factIcons';
+import type { FactIcon } from '../types';
 
 interface FactModalProps {
   open: boolean;
   title: string;
   text: string;
+  /** Heroicon token — same token as the summary benchmark card. */
+  icon: FactIcon;
+  /** 1..9 — pastel palette applied to the hero icon tile. */
+  palette: number;
   onClose: () => void;
 }
 
-export default function FactModal({ open, title, text, onClose }: FactModalProps) {
+export default function FactModal({
+  open,
+  title,
+  text,
+  icon,
+  palette,
+  onClose,
+}: FactModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const Icon = FACT_ICON_COMPONENTS[icon];
 
   // Focus the dismiss button when the modal opens, and close on Escape.
   useEffect(() => {
@@ -47,7 +61,7 @@ export default function FactModal({ open, title, text, onClose }: FactModalProps
       role="presentation"
     >
       <div
-        className="fact-modal"
+        className={`fact-modal palette-${palette}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="fact-modal-title"
@@ -62,6 +76,9 @@ export default function FactModal({ open, title, text, onClose }: FactModalProps
           ×
         </button>
         <p className="fact-modal-kicker">הידעת?</p>
+        <span className="fact-modal-icon-tile" aria-hidden="true">
+          <Icon className="fact-modal-icon-svg" strokeWidth={1.75} />
+        </span>
         <h2 id="fact-modal-title" className="fact-modal-title">{renderInline(title)}</h2>
         <p className="fact-modal-body">{renderInline(text)}</p>
         <div className="fact-modal-actions">
@@ -78,3 +95,4 @@ export default function FactModal({ open, title, text, onClose }: FactModalProps
     </div>
   );
 }
+

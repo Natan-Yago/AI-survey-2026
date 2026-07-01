@@ -94,13 +94,13 @@ export default function SummaryPage() {
               </p>
             </div>
             <div className="fact-list">
-              {facts.map((f, i) => (
+              {facts.map((f) => (
                 <StatCard
                   key={f.questionIndex}
                   stat={f.stat}
                   caption={f.caption}
                   icon={f.icon}
-                  palette={(i % 9) + 1}
+                  palette={f.palette}
                 />
               ))}
             </div>

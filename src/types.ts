@@ -105,6 +105,12 @@ export interface Fact {
   /** Heroicon token used by the Summary stat card. */
   icon: FactIcon;
   /**
+   * Fixed pastel color palette (1..9) applied to the icon tile in both the
+   * Summary stat card and the per-question "הידעת?" popup. Keeping this on
+   * the fact ensures the same fact always renders in the same color.
+   */
+  palette: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+  /**
    * Optional predicate used by the Summary page to decide whether to
    * surface this fact based on the user's answer. The question-page popup
    * ignores this and always shows the fact.

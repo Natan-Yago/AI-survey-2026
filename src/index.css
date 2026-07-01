@@ -462,17 +462,19 @@ body {
   height: 22px;
 }
 
-/* Soft pastel palettes for the 9 benchmark cards. Each pairs a very light
-   tint background with a saturated stroke color for the icon. */
-.stat-card.palette-1 { --tile-bg: #FFE4E6; --tile-fg: #E11D48; } /* rose */
-.stat-card.palette-2 { --tile-bg: #E0E7FF; --tile-fg: #4F46E5; } /* indigo */
-.stat-card.palette-3 { --tile-bg: #FEF3C7; --tile-fg: #D97706; } /* amber */
-.stat-card.palette-4 { --tile-bg: #D1FAE5; --tile-fg: #059669; } /* emerald */
-.stat-card.palette-5 { --tile-bg: #E0F2FE; --tile-fg: #0284C7; } /* sky */
-.stat-card.palette-6 { --tile-bg: #EDE9FE; --tile-fg: #7C3AED; } /* violet */
-.stat-card.palette-7 { --tile-bg: #CCFBF1; --tile-fg: #0D9488; } /* teal */
-.stat-card.palette-8 { --tile-bg: #FFEDD5; --tile-fg: #EA580C; } /* orange */
-.stat-card.palette-9 { --tile-bg: #ECFCCB; --tile-fg: #65A30D; } /* lime */
+/* Soft pastel palettes for the 9 benchmark facts. Each pairs a very light
+   tint background with a saturated stroke color for the icon. Applied as
+   bare `.palette-N` selectors so both the Summary stat card and the
+   "הידעת?" popup can inherit the same tile colors from a single source. */
+.palette-1 { --tile-bg: #FFE4E6; --tile-fg: #E11D48; } /* rose */
+.palette-2 { --tile-bg: #E0E7FF; --tile-fg: #4F46E5; } /* indigo */
+.palette-3 { --tile-bg: #FEF3C7; --tile-fg: #D97706; } /* amber */
+.palette-4 { --tile-bg: #D1FAE5; --tile-fg: #059669; } /* emerald */
+.palette-5 { --tile-bg: #E0F2FE; --tile-fg: #0284C7; } /* sky */
+.palette-6 { --tile-bg: #EDE9FE; --tile-fg: #7C3AED; } /* violet */
+.palette-7 { --tile-bg: #CCFBF1; --tile-fg: #0D9488; } /* teal */
+.palette-8 { --tile-bg: #FFEDD5; --tile-fg: #EA580C; } /* orange */
+.palette-9 { --tile-bg: #ECFCCB; --tile-fg: #65A30D; } /* lime */
 
 
 /* Fun-fact popup shown on selected question pages. */
@@ -502,11 +504,25 @@ body {
   border-radius: 8px;
 }
 .fact-modal-close:hover { background: #F1F2F4; color: var(--ink); }
+.fact-modal-icon-tile {
+  width: 60px; height: 60px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.25rem 0 0.9rem;
+  background: var(--tile-bg, #F1F2F4);
+  color: var(--tile-fg, var(--ink));
+}
+.fact-modal-icon-svg {
+  width: 30px;
+  height: 30px;
+}
 .fact-modal-kicker {
   font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em;
   color: var(--deloitte-green-dark);
   text-transform: uppercase;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.4rem;
 }
 .fact-modal-title {
   font-size: 1.05rem; font-weight: 700; line-height: 1.4;
@@ -520,6 +536,19 @@ body {
 }
 .fact-modal-actions {
   display: flex; justify-content: flex-start;
+}
+
+@media (max-width: 480px) {
+  .fact-modal {
+    padding: 2rem 1.25rem 1.25rem;
+  }
+  .fact-modal-icon-tile {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+  }
+  .fact-modal-icon-svg {
+    width: 26px; height: 26px;
+  }
 }
 
 @keyframes fact-fade-in {
