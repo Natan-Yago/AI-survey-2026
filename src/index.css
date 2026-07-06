@@ -62,18 +62,21 @@ body {
     linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(239, 244, 229, 0.45)),
     #f5f7ef;
 }
-@media (min-width: 1024px) {
+/* Desktop hero layout: only when viewport is wide AND landscape enough */
+/* Hero image is ~4:5 portrait; at 100svh height it needs 80svh of width. */
+@media (min-width: 1024px) and (min-aspect-ratio: 5/4) {
   .welcome-layout {
     height: 100svh;
     min-height: 0;
     overflow: hidden;
-    grid-template-columns: minmax(20rem, min(36vw, 80svh)) minmax(0, 1fr);
+    grid-template-columns: 80svh minmax(0, 1fr);
   }
   .welcome-image-col,
   .welcome-content-col {
     height: 100svh;
     min-height: 0;
   }
+  .welcome-image-col { flex-shrink: 0; }
   .welcome-main {
     min-height: 0;
     overflow: hidden;
@@ -82,12 +85,9 @@ body {
     max-height: calc(100svh - 3rem);
   }
 }
-@media (min-width: 1280px) {
-  .welcome-layout {
-    grid-template-columns: minmax(22rem, min(38vw, 80svh)) minmax(0, 1fr);
-  }
-}
-@media (max-width: 1023px) {
+
+/* Mobile / no-image layout: narrow viewport OR tall (portrait-ish) viewport. */
+@media (max-width: 1023px), (max-aspect-ratio: 5/4) {
   .welcome-body { position: relative; isolation: isolate; background: #f5f7ef; }
   .welcome-body::before {
     content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
@@ -105,16 +105,21 @@ body {
     -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 100%);
     mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 100%);
   }
-  @media (min-width: 640px) {
-    .welcome-body::after { height: 7rem; }
-  }
   .welcome-body .welcome-content-col { background: transparent; }
   .welcome-body .welcome-image-col { display: none; }
+  .welcome-body .welcome-layout { grid-template-columns: minmax(0, 1fr); }
   .welcome-body .welcome-main { padding-top: 7.5rem; }
+}
 
-  @media (min-width: 640px) {
-    .welcome-body .welcome-main { padding-top: 8rem; }
-  }
+@media ((max-width: 1023px) or (max-aspect-ratio: 5/4)) and (min-width: 640px) {
+  .welcome-body::after { height: 7rem; }
+  .welcome-body .welcome-main { padding-top: 8rem; }
+}
+
+/* Swap logos when the hero image is hidden on wide-but-short landscape screens. */
+@media (min-width: 1024px) and (max-aspect-ratio: 5/4) {
+  .welcome-mobile-logo { display: inline-flex; }
+  .welcome-desktop-logo { display: none; }
 }
 
 /* ----- Survey body ----- */

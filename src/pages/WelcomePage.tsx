@@ -25,7 +25,7 @@ export default function WelcomePage() {
       </Link>
       <div className="welcome-layout min-h-screen w-full grid grid-cols-1" dir="ltr">
         <aside className="welcome-image-col relative hidden lg:flex bg-[#74E796] overflow-hidden items-center justify-center" dir="rtl">
-          <img src={assetUrl('new-hero-image.jpg')} alt="" className="w-full h-full object-contain" />
+          <img src={assetUrl('new-hero-image.jpg')} alt="" className="w-full h-full object-cover" />
         </aside>
 
         <section className="welcome-content-col flex flex-col min-h-screen" dir="rtl">
@@ -49,10 +49,17 @@ export default function WelcomePage() {
                   <Link to="/q/1" className="btn-ghost text-center text-base">התחל מחדש ←</Link>
                 )}
               </div>
-              <p className="text-sm lg:text-xs xl:text-sm text-[#6B7280] leading-relaxed border-t border-[#E5E5E5] pt-6 lg:pt-4 xl:pt-5">
-                כלל התשובות נשמרות באופן מקומי על המכשיר שלך וישמשו לצורכי מחקר וניתוח מצרפי בלבד.
-                בכל שאלה, אנא בחר/י את האפשרות המשקפת בצורה המדויקת ביותר את המצב בארגון שלך כיום.
-              </p>
+              <nav className="text-sm lg:text-xs xl:text-sm text-[#6B7280] leading-relaxed border-t border-[#E5E5E5] pt-6 lg:pt-4 xl:pt-5 flex flex-wrap gap-x-6 gap-y-2">
+                <a href="https://www.deloitte.com/il/en/legal/legal.html" target="_blank" rel="noopener noreferrer" className="hover:text-[#1A1A1A] hover:underline">
+                  תנאי שימוש
+                </a>
+                <a href="https://www.deloitte.com/il/en/legal/Cookies.html" target="_blank" rel="noopener noreferrer" className="hover:text-[#1A1A1A] hover:underline">
+                  עוגיות
+                </a>
+                <a href="https://www.deloitte.com/il/en/legal/privacy.html" target="_blank" rel="noopener noreferrer" className="hover:text-[#1A1A1A] hover:underline">
+                  פרטיות
+                </a>
+              </nav>
             </div>
           </main>
         </section>
