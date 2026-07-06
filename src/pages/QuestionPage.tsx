@@ -231,6 +231,10 @@ export default function QuestionPage() {
       const promptLabel = orientation === 'row' ? 'שורה' : 'טווח זמן';
 
       if (usesMatrixTable) {
+        // Q10 (survey index 9 — "רמת אימוץ AI לפי פונקציה") keeps its
+        // per-row card list on mobile; every other radio matrix uses the
+        // native <select> per row for a shorter tap path.
+        const mobileVariant: 'dropdown' | 'cards' = idx === 9 ? 'cards' : 'dropdown';
         return (
           <MatrixTable
             rows={prompts}
@@ -239,32 +243,57 @@ export default function QuestionPage() {
             ariaLabel={question.title}
             isChecked={(promptIndex, choiceIndex) => saved[promptIndex] === choiceIndex}
             onSelect={handleMatrixSingle}
+            mobileVariant={mobileVariant}
           />
         );
       }
 
       return (
         <div className="matrix-list">
-          {prompts.map((prompt, promptIndex) => (
-            <section key={promptIndex} className="matrix-row">
-              <h2 className="matrix-row-title">{renderInline(prompt)}</h2>
-              <div
-                className="matrix-choice-grid"
-                role="radiogroup"
-                aria-label={`${promptLabel} ${promptIndex + 1}`}
-              >
-                {choices.map((choice, choiceIndex) => (
-                  <MatrixOption
-                    key={choiceIndex}
-                    label={choice}
-                    checked={saved[promptIndex] === choiceIndex}
-                    role="radio"
-                    onClick={() => handleMatrixSingle(promptIndex, choiceIndex)}
-                  />
-                ))}
-              </div>
-            </section>
-          ))}
+          {prompts.map((prompt, promptIndex) => {
+            const selectValue =
+              typeof saved[promptIndex] === 'number' ? String(saved[promptIndex]) : '';
+            return (
+              <section key={promptIndex} className="matrix-row">
+                <h2 className="matrix-row-title">{renderInline(prompt)}</h2>
+                <select
+                  className="matrix-mobile-select"
+                  aria-label={prompt}
+                  required
+                  value={selectValue}
+                  onChange={(e) => {
+                    const raw = e.target.value;
+                    if (raw === '') return;
+                    handleMatrixSingle(promptIndex, Number(raw));
+                  }}
+                >
+                  <option value="" disabled hidden>
+                    בחר/י אפשרות
+                  </option>
+                  {choices.map((choice, choiceIndex) => (
+                    <option key={choiceIndex} value={choiceIndex}>
+                      {choice}
+                    </option>
+                  ))}
+                </select>
+                <div
+                  className="matrix-choice-grid"
+                  role="radiogroup"
+                  aria-label={`${promptLabel} ${promptIndex + 1}`}
+                >
+                  {choices.map((choice, choiceIndex) => (
+                    <MatrixOption
+                      key={choiceIndex}
+                      label={choice}
+                      checked={saved[promptIndex] === choiceIndex}
+                      role="radio"
+                      onClick={() => handleMatrixSingle(promptIndex, choiceIndex)}
+                    />
+                  ))}
+                </div>
+              </section>
+            );
+          })}
         </div>
       );
     }

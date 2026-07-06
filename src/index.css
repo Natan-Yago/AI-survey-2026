@@ -270,6 +270,7 @@ body {
   box-shadow: none;
 }
 .matrix-mobile-list { display: none; }
+.matrix-mobile-select { display: none; }
 .matrix-mobile-row { border-top: 1px solid rgba(26, 26, 26, 0.12); padding-top: 14px; }
 .matrix-mobile-row:first-child { border-top: 0; padding-top: 0; }
 .matrix-mobile-options { display: grid; grid-template-columns: 1fr; gap: 8px; }
@@ -343,6 +344,47 @@ body {
   .matrix-choice-grid--compact { grid-template-columns: 1fr; }
   .matrix-table-shell { display: none; }
   .matrix-mobile-list { display: grid; gap: 14px; }
+  /* Show the native <select> on mobile for both the MatrixTable path
+     (inside .matrix-mobile-list) and the fallback .matrix-list path.
+     In the fallback path we also hide the sibling card grid so the
+     select replaces it. */
+  .matrix-mobile-select { display: block; }
+  .matrix-list .matrix-choice-grid { display: none; }
+
+  /* Native <select> per row for radio matrices on mobile. Styled to match
+     the option-card surface; renders the OS bottom-sheet picker on tap.
+     Chevron sits on the visual left to respect the RTL flow. */
+  .matrix-mobile-select {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 14px 10px 40px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background-color: rgba(254, 255, 251, 0.95);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    direction: rtl;
+    text-align: right;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 20 20' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 8 10 12 14 8'/></svg>");
+    background-repeat: no-repeat;
+    background-position: left 14px center;
+    background-size: 14px 14px;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+  .matrix-mobile-select:focus {
+    outline: none;
+    border-color: var(--deloitte-green);
+    box-shadow: 0 0 0 3px rgba(134, 188, 37, 0.22);
+  }
+  /* Muted color for the placeholder while nothing is selected. */
+  .matrix-mobile-select:required:invalid { color: var(--muted); }
+  .matrix-mobile-select option { color: var(--ink); }
+  .matrix-mobile-select option[disabled] { color: var(--muted); }
 }
 
 /* ===== Summary styles ===== */
