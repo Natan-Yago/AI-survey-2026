@@ -1,0 +1,231 @@
+import { describe, expect, it } from 'vitest';
+import { computeScore, isQuestionAnswered } from './scoring';
+import { FACTS } from '../data/facts';
+import type { AnswersMap } from '../types';
+
+describe('computeScore', () => {
+  it('returns a safe fallback (Level 1, average 0) when no answers are provided', () => {
+    const result = computeScore({});
+    expect(result.count).toBe(0);
+    expect(result.average).toBe(0);
+    expect(result.level.id).toBe(1);
+  });
+
+  it('ignores non-scored (demographic / non-ordinal) questions entirely', () => {
+    const answers: AnswersMap = { q1: 0, q2: 3, q3: 1, q4: 2, q5: 0, q6: 4 };
+    const result = computeScore(answers);
+    expect(result.count).toBe(0);
+    expect(result.average).toBe(0);
+  });
+
+  it('ignores "לא יודע/ת" (don\'t know) answers where the scorer requires skipping them', () => {
+    // Q9 (idx 8) has 6 options; index 5 = "don't know" and must be skipped.
+    const result = computeScore({ q9: 5 });
+    expect(result.count).toBe(0);
+    expect(result.perQuestion[8]).toBeUndefined();
+  });
+
+  it('ignores non-numeric / malformed answer values', () => {
+    // Q9 expects a number; a stray string should be treated as unanswered.
+    const result = computeScore({ q9: 'not-a-number' as unknown as number });
+    expect(result.count).toBe(0);
+  });
+
+  it('rounds/averages correctly across multiple scored questions', () => {
+    // Q9 (idx 8, singleAsc5(5)): answer 0 → score 1
+    // Q16 (idx 15, singleAsc5()): answer 4 → score 5
+    const result = computeScore({ q9: 0, q16: 4 });
+    expect(result.count).toBe(2);
+    expect(result.average).toBe(3); // (1 + 5) / 2
+  });
+
+  it('handles decimal precision without rounding error blowing up', () => {
+    // Three single-question scores: 1, 3, 4 → average 2.666...
+    const result = computeScore({ q16: 0, q18: 2, q20: 3 });
+    expect(result.count).toBe(3);
+    expect(result.average).toBeCloseTo(8 / 3, 10);
+  });
+
+  it('exposes the full FACTS list on every result regardless of answers', () => {
+    const result = computeScore({});
+    expect(result.facts).toEqual(FACTS);
+  });
+
+  describe('boundary score → level mapping (via computeScore)', () => {
+    it.each([
+      [0, 1], // score 1 (answer 0 on a singleAsc5 question) → Level 1
+      [1, 2], // score 2 → Level 2
+      [2, 3], // score 3 → Level 3
+      [3, 4], // score 4 → Level 4
+      [4, 5], // score 5 → Level 5
+    ])('a single scored answer of %s (score %s) resolves to the matching level id', (answerIdx, expectedId) => {
+      // Q26 (idx 25) is singleAsc5(): score = answer + 1, giving an exact
+      // integer average that lands squarely inside each level's range.
+      const result = computeScore({ q26: answerIdx });
+      expect(result.average).toBe(answerIdx + 1);
+      expect(result.level.id).toBe(expectedId);
+    });
+
+    it('delegates fractional averages to levelForScore at the documented boundaries', () => {
+      // Q7 (matrixDesc5, 2 rows) + Q9 (singleAsc5(5)) combine to produce a
+      // fractional average that exercises the exact 1.81 boundary.
+      // Q7 col 4 twice → scores [1, 1]; Q9 answer 0 → score 1. Avg = 1.0.
+      const low = computeScore({ q7: { 0: 4, 1: 4 }, q9: 0 });
+      expect(low.average).toBe(1);
+      expect(low.level.id).toBe(1);
+
+      // Q7 col 0 twice → scores [5, 5]; Q9 answer 4 → score 5. Avg = 5.0.
+      const high = computeScore({ q7: { 0: 0, 1: 0 }, q9: 4 });
+      expect(high.average).toBe(5);
+      expect(high.level.id).toBe(5);
+    });
+  });
+
+  describe('per-question scorers (QA-PLAN §2 coverage)', () => {
+    it('Q7 (idx 6, matrix-single, matrixDesc5): col 0 = best (5), col 4 = worst (0/skipped floor)', () => {
+      const result = computeScore({ q7: { 0: 0, 1: 4 } });
+      expect(result.perQuestion[6]).toBe(3); // (5 + 1) / 2
+      expect(result.count).toBe(2);
+    });
+
+    it('Q8 (idx 7, matrix-single, matrixAsc5): col 0 = worst (1), col 4 = best (5)', () => {
+      const result = computeScore({ q8: { 0: 0, 1: 4 } });
+      expect(result.perQuestion[7]).toBe(3); // (1 + 5) / 2
+    });
+
+    it('Q9 (idx 8, single, singleAsc5(5)): answers 0..4 map to scores 1..5, idx 5 skipped', () => {
+      expect(computeScore({ q9: 0 }).perQuestion[8]).toBe(1);
+      expect(computeScore({ q9: 4 }).perQuestion[8]).toBe(5);
+      expect(computeScore({ q9: 5 }).count).toBe(0);
+    });
+
+    it('Q10 (idx 9, matrix-single, custom [1,3,5] map)', () => {
+      const result = computeScore({ q10: { 0: 0, 1: 1, 2: 2 } });
+      expect(result.perQuestion[9]).toBe(3); // (1 + 3 + 5) / 3
+    });
+
+    it('Q11 (idx 10, single, singleDesc5(5)): answer 0 (80%+) = best (5), idx 5 skipped', () => {
+      expect(computeScore({ q11: 0 }).perQuestion[10]).toBe(5);
+      expect(computeScore({ q11: 4 }).perQuestion[10]).toBe(1);
+      expect(computeScore({ q11: 5 }).count).toBe(0);
+    });
+
+    it('Q12 (idx 11, single, singleAsc5(5)): answer 4 (>80%) = best (5), idx 5 skipped', () => {
+      expect(computeScore({ q12: 4 }).perQuestion[11]).toBe(5);
+      expect(computeScore({ q12: 5 }).count).toBe(0);
+    });
+
+    it('Q13 (idx 12, matrix-single, percentage binning): skips "don\'t know" col 0', () => {
+      // col 1 → 0% → bin 1; col 11 → 100% → bin 5; col 0 → don't know → skipped
+      const result = computeScore({ q13: { 0: 1, 1: 11 } });
+      expect(result.perQuestion[12]).toBe(3); // (1 + 5) / 2
+      expect(computeScore({ q13: { 0: 0 } }).count).toBe(0);
+    });
+
+    it('Q16 (idx 15, single, singleAsc5(), no skip): answer 0 → 1, answer 4 → 5', () => {
+      expect(computeScore({ q16: 0 }).perQuestion[15]).toBe(1);
+      expect(computeScore({ q16: 4 }).perQuestion[15]).toBe(5);
+    });
+
+    it('Q18 (idx 17, single, singleAsc5())', () => {
+      expect(computeScore({ q18: 2 }).perQuestion[17]).toBe(3);
+    });
+
+    it('Q20 (idx 19, single, singleAsc5())', () => {
+      expect(computeScore({ q20: 2 }).perQuestion[19]).toBe(3);
+    });
+
+    it('Q21 (idx 20, single, singleAsc5())', () => {
+      expect(computeScore({ q21: 2 }).perQuestion[20]).toBe(3);
+    });
+
+    it('Q22 (idx 21, matrix-column-single, row+1 scoring)', () => {
+      const result = computeScore({ q22: { 0: 0, 1: 4, 2: 2 } });
+      expect(result.perQuestion[21]).toBe(3); // (1 + 5 + 3) / 3
+    });
+
+    it('Q26 (idx 25, single, singleAsc5())', () => {
+      expect(computeScore({ q26: 2 }).perQuestion[25]).toBe(3);
+    });
+
+    it('Q27 (idx 26, single, singleAsc5())', () => {
+      expect(computeScore({ q27: 2 }).perQuestion[26]).toBe(3);
+    });
+
+    it('Q29 (idx 28, matrix-single, matrixAsc5)', () => {
+      const result = computeScore({ q29: { 0: 0, 1: 4 } });
+      expect(result.perQuestion[28]).toBe(3); // (1 + 5) / 2
+    });
+
+    it('Q30 (idx 29, single, singleAsc5())', () => {
+      expect(computeScore({ q30: 2 }).perQuestion[29]).toBe(3);
+    });
+
+    it('Q32 (idx 31, matrix-single, custom mapping, skips "don\'t know" col 4)', () => {
+      const result = computeScore({ q32: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 } });
+      // scores: 5,4,3,2 (col 4 = don't know, skipped)
+      expect(result.perQuestion[31]).toBe(3.5);
+      expect(result.count).toBe(4);
+    });
+  });
+
+  describe('edge cases', () => {
+    it('handles a partially completed matrix (missing row) by scoring only present rows', () => {
+      const result = computeScore({ q7: { 0: 0 } }); // row 1 missing
+      expect(result.count).toBe(1);
+      expect(result.perQuestion[6]).toBe(5);
+    });
+
+    it('ignores unrelated/unknown answer keys not present in QUESTION_SCORERS', () => {
+      const answers: AnswersMap = { qUnknown: 3 } as unknown as AnswersMap;
+      const result = computeScore(answers);
+      expect(result.count).toBe(0);
+    });
+
+    it('duplicated / re-selected multi-select values do not double count (matrix-single dedupes by row key)', () => {
+      // Overwriting the same row key simulates a re-selection; only the
+      // final value for that row contributes.
+      const reselected: Record<number, number> = { 0: 4 };
+      reselected[0] = 0;
+      const result = computeScore({ q7: reselected });
+      expect(result.count).toBe(1);
+      expect(result.perQuestion[6]).toBe(5);
+    });
+
+    it('computes correct decimal precision for an uneven split of scores', () => {
+      const result = computeScore({ q13: { 0: 1, 1: 6 } }); // bins: 1 and 3
+      expect(result.average).toBe(2); // (1+3)/2
+    });
+  });
+});
+
+describe('isQuestionAnswered', () => {
+  it('single: false when undefined, true when a number is set', () => {
+    expect(isQuestionAnswered(0, {})).toBe(false);
+    expect(isQuestionAnswered(0, { q1: 0 })).toBe(true);
+  });
+
+  it('multi: false when empty array or missing, true when non-empty', () => {
+    expect(isQuestionAnswered(13, {})).toBe(false); // Q14 is multi
+    expect(isQuestionAnswered(13, { q14: [] })).toBe(false);
+    expect(isQuestionAnswered(13, { q14: [1, 2] })).toBe(true);
+  });
+
+  it('matrix-multi: false when empty array, true when non-empty', () => {
+    expect(isQuestionAnswered(13, { q14: [] })).toBe(false);
+  });
+
+  it('matrix-single: requires an entry for every row', () => {
+    // Q7 (idx 6) has 2 rows.
+    expect(isQuestionAnswered(6, {})).toBe(false);
+    expect(isQuestionAnswered(6, { q7: { 0: 1 } })).toBe(false);
+    expect(isQuestionAnswered(6, { q7: { 0: 1, 1: 2 } })).toBe(true);
+  });
+
+  it('matrix-column-single: requires an entry for every column', () => {
+    // Q22 (idx 21) has 3 columns.
+    expect(isQuestionAnswered(21, {})).toBe(false);
+    expect(isQuestionAnswered(21, { q22: { 0: 1, 1: 2 } })).toBe(false);
+    expect(isQuestionAnswered(21, { q22: { 0: 1, 1: 2, 2: 3 } })).toBe(true);
+  });
+});

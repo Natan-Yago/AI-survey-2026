@@ -1,5 +1,10 @@
 # HubSpot Integration — AI Maturity Survey
 
+> **⚠️ Superseded.** This HubSpot plan was never implemented and has been
+> replaced by the Azure SQL approach. See
+> [AZURE-SQL-HANDOFF.md](AZURE-SQL-HANDOFF.md). This file is kept for reference
+> only.
+
 ## 1. Recommended HubSpot architecture
 
 ### Recommendation

@@ -9,3 +9,5 @@ demo
 .env
 .env.local
 *.log
+coverage
+test-results
