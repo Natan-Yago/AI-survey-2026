@@ -1,4 +1,11 @@
 import { useEffect, useMemo } from 'react';
+import {
+  ArrowPathIcon,
+  BeakerIcon,
+  ChartBarIcon,
+  MagnifyingGlassIcon,
+  RocketLaunchIcon,
+} from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { useAnswers } from '../state/AnswersContext';
 import { computeScore, MATURITY_LEVELS } from '../lib/scoring';
@@ -10,6 +17,14 @@ const EXPERT_IMAGES: Record<string, string> = {
   'rodolev@deloitte.co.il': 'dolevrotem.webp',
   'tkochav@deloitte.co.il': 'tovi-kochav.webp',
 };
+
+const LEVEL_VISUALS = [
+  { icon: MagnifyingGlassIcon, color: '#7BA82D', tint: '#EBF1D8' },
+  { icon: BeakerIcon, color: '#6FA01D', tint: '#E4EDCF' },
+  { icon: ChartBarIcon, color: '#5A8A1F', tint: '#D6E2BE' },
+  { icon: ArrowPathIcon, color: '#478016', tint: '#C8D7AC' },
+  { icon: RocketLaunchIcon, color: '#2D5E0A', tint: '#B3C896' },
+] as const;
 
 const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 
@@ -38,7 +53,7 @@ export default function SummaryPage() {
       <main className="survey-demo-main flex-1 min-h-[600px] w-full px-5 sm:px-8 py-8 sm:py-12 pb-48 flex items-start justify-center">
         <section className="w-full max-w-[720px] summary-main">
           {/* Hero */}
-          <section className="summary-hero">
+          <section className="summary-hero summary-glass-card">
             <div className="mb-7">
               <div className="flex items-center justify-between gap-5 text-xs text-[#6B7280] mb-2">
                 <span className="min-w-0 truncate">סיכום הסקר</span>
@@ -49,43 +64,71 @@ export default function SummaryPage() {
               </div>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold leading-snug mb-3">
-              <span className="font-latin">{level.nameEn}</span>
-            </h1>
+            <header className="summary-profile-intro">
+              <h1 className="summary-profile-title">פרופיל הבשלות של הארגון ב-AI</h1>
+              <p className="summary-profile-description">הערכת הבשלות הארגונית לאימוץ ופיתוח AI</p>
+            </header>
+
+            <h2 className="summary-level-title">
+              <span className="font-latin">Level {level.id} - {level.nameEn}</span>
+            </h2>
             <div className="score-figure">
-              <span className="score-num font-latin">{count > 0 ? average.toFixed(2) : '—'}</span>
+              <span className="score-num font-latin">{count > 0 ? average.toFixed(2) : '-'}</span>
               <span className="score-denom font-latin">/ 5.00</span>
             </div>
-            <p className="text-sm text-[#6B7280] leading-relaxed mb-6">
-              {level.shortDesc}
-            </p>
-            <div className="summary-answer option-card surface-card w-full text-start">
-              <span className="summary-answer-marker" aria-hidden="true"></span>
-              <p>{renderInline(level.positioning)}</p>
-            </div>
 
-            {/* Stage progress dots */}
+            {/* Maturity journey */}
             <div className="stage-progress" aria-label="שלב במסע ה-AI">
               {MATURITY_LEVELS.map((s, i) => {
                 const state = i < level.id - 1 ? 'past' : i === level.id - 1 ? 'current' : 'future';
+                const visual = LEVEL_VISUALS[i];
+                const LevelIcon = visual.icon;
                 return (
-                  <div key={s.id} style={{ display: 'contents' }}>
-                    <div className={`stage-step is-${state}`}>
-                      <span className="stage-dot"></span>
-                      <span className="stage-step-label font-latin">L{s.id}</span>
-                    </div>
-                    {i < MATURITY_LEVELS.length - 1 && <span className="stage-line"></span>}
+                  <div
+                    key={s.id}
+                    className={`stage-step is-${state}`}
+                    aria-current={state === 'current' ? 'step' : undefined}
+                    style={{
+                      '--stage-color': visual.color,
+                      '--stage-tint': visual.tint,
+                    } as React.CSSProperties}
+                  >
+                    <span className="stage-number font-latin">{s.id}</span>
+                    <span className="stage-icon" aria-hidden="true">
+                      <LevelIcon />
+                    </span>
+                    <span className="stage-step-label">
+                      <strong className="font-latin">{s.nameEn}</strong>
+                      <span dir="rtl">{s.nameHe}</span>
+                    </span>
+                    <span className="stage-dot" aria-hidden="true"></span>
                   </div>
                 );
               })}
             </div>
           </section>
 
-          {/* Implications section removed: stage-level descriptions were
-              generic and could not honestly assert characteristics of the
-              user's organization. Global benchmarks fill this role now. */}
+          <section className="summary-section maturity-content" aria-labelledby="maturity-content-title">
+            <div className="summary-section-head">
+              <h2 id="maturity-content-title" className="summary-section-title">המשמעות עבור הארגון</h2>
+            </div>
+            <div className="maturity-content-list">
+              <article className="maturity-content-block summary-glass-card">
+                <h3>מה זה אומר ואיך זה נראה בארגונים</h3>
+                <p>{renderInline(level.meaning)}</p>
+              </article>
+              <article className="maturity-content-block summary-glass-card">
+                <h3>האתגרים שחברות בשלב הזה נתקלות בהם</h3>
+                <p>{renderInline(level.challenges)}</p>
+              </article>
+              <article className="maturity-content-block maturity-content-block--next summary-glass-card">
+                <h3>הצעד הבא</h3>
+                <p>{renderInline(level.nextStep)}</p>
+              </article>
+            </div>
+          </section>
 
-          {/* Global benchmarks — always shown, in question-index order. */}
+          {/* Global benchmarks — always shown. */}
           <section className="summary-section">
             <div className="summary-section-head">
               <h2 className="summary-section-title">בנצ'מרק עולמי · Deloitte 2026</h2>
@@ -114,7 +157,7 @@ export default function SummaryPage() {
             </div>
             <div className="expert-grid">
               {SUMMARY_EXPERTS.map((e) => (
-                <div key={e.email} className="option-card surface-card expert-card">
+                <div key={e.email} className="option-card surface-card summary-glass-card expert-card">
                   <div className="expert-avatar">
                     <img className="expert-avatar-img" src={assetUrl(EXPERT_IMAGES[e.email])} alt={e.name} />
                   </div>

@@ -35,7 +35,7 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
 
   it('shows a resume button on Welcome when progress already exists', () => {
     localStorage.setItem(
-      'ai-survey-answers-v1',
+      'ai-survey-answers-v2',
       JSON.stringify({ answers: { q1: 0 }, lastQuestionIndex: 1 }),
     );
     renderApp(['/']);
@@ -72,24 +72,60 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     expect(await screen.findByRole('link', { name: 'התחל סקר ←' })).toBeInTheDocument();
   });
 
+  it('Q18 allows independent matrix selections and limits each column to 3', async () => {
+    const user = userEvent.setup();
+    renderApp(['/q/18']);
+
+    const rows = document.querySelectorAll('.matrix-table-region tbody tr');
+    const firstRowButtons = within(rows[0] as HTMLElement).getAllByRole('checkbox');
+    await user.click(firstRowButtons[0]);
+    await user.click(firstRowButtons[1]);
+    expect(firstRowButtons[0]).toHaveAttribute('aria-checked', 'true');
+    expect(firstRowButtons[1]).toHaveAttribute('aria-checked', 'true');
+
+    await user.click(within(rows[1] as HTMLElement).getAllByRole('checkbox')[0]);
+    await user.click(within(rows[2] as HTMLElement).getAllByRole('checkbox')[0]);
+    const fourthChoice = within(rows[3] as HTMLElement).getAllByRole('checkbox')[0];
+    await user.click(fourthChoice);
+
+    expect(fourthChoice).toHaveAttribute('aria-checked', 'false');
+    expect(screen.getByText('ניתן לבחור עד 3 אפשרויות בכל עמודה.')).toBeInTheDocument();
+  });
+
   it('Summary page renders the maturity level matching computeScore() for the persisted answers', () => {
-    const answers: AnswersMap = { q16: 4, q18: 4, q20: 4, q26: 4, q27: 4, q30: 4 };
+    const answers: AnswersMap = { q17: 4, q19: 4, q23: 4, q29: 4, q30: 4, q33: 4 };
     localStorage.setItem(
-      'ai-survey-answers-v1',
-      JSON.stringify({ answers, lastQuestionIndex: 31 }),
+      'ai-survey-answers-v2',
+      JSON.stringify({ answers, lastQuestionIndex: 34 }),
     );
     const expected = computeScore(answers);
     renderApp(['/summary']);
 
-    const heading = screen.getByRole('heading', { level: 1 });
-    expect(within(heading).getByText(expected.level.nameEn)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'פרופיל הבשלות של הארגון ב-AI' })).toBeInTheDocument();
+    expect(screen.getByText('הערכת הבשלות הארגונית לאימוץ ופיתוח AI')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: `Level ${expected.level.id} - ${expected.level.nameEn}` })).toBeInTheDocument();
     expect(screen.getByText(expected.average.toFixed(2))).toBeInTheDocument();
     expect(screen.getByText(`${expected.count} answers scored`)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: "בנצ'מרק עולמי · Deloitte 2026" })).toBeInTheDocument();
+    expect(document.querySelectorAll('.stat-card')).toHaveLength(10);
+    expect(screen.getByText('21%')).toBeInTheDocument();
+    expect(screen.getByText('23% → 74%')).toHaveAttribute('dir', 'ltr');
+    expect(screen.getByText('23% → 74%').parentElement).not.toHaveAttribute('dir');
+    expect(document.querySelector('.summary-hero')).toHaveClass('summary-glass-card');
+    expect(document.querySelectorAll('.maturity-content-block.summary-glass-card')).toHaveLength(3);
+    expect(document.querySelectorAll('.stat-card.summary-glass-card')).toHaveLength(10);
+    expect(document.querySelectorAll('.expert-card.summary-glass-card')).toHaveLength(2);
+
+    const journey = screen.getByLabelText('שלב במסע ה-AI');
+    ['Exploring', 'Building', 'Scaling', 'Transforming', 'AI-First'].forEach((name) => {
+      expect(within(journey).getByText(name)).toBeInTheDocument();
+    });
+    expect(screen.queryByText('השאלה הניהולית המרכזית')).not.toBeInTheDocument();
   });
 
-  it('Summary page shows a "—" placeholder score when there are no scored answers', () => {
+  it('Summary page shows a "-" placeholder score when there are no scored answers', () => {
     renderApp(['/summary']);
-    expect(screen.getByText('—')).toBeInTheDocument();
+    expect(screen.getByText('-')).toBeInTheDocument();
     expect(screen.getByText('Level 1 - Exploring')).toBeInTheDocument();
   });
 });

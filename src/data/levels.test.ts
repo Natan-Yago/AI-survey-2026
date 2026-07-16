@@ -29,5 +29,18 @@ describe('levelForScore', () => {
   it('MATURITY_LEVELS has exactly 5 levels ordered by id', () => {
     expect(MATURITY_LEVELS).toHaveLength(5);
     expect(MATURITY_LEVELS.map((l) => l.id)).toEqual([1, 2, 3, 4, 5]);
+    expect(MATURITY_LEVELS.map((l) => l.nameEn)).toEqual([
+      'Exploring',
+      'Building',
+      'Scaling',
+      'Transforming',
+      'AI-First',
+    ]);
+    MATURITY_LEVELS.forEach((level) => {
+      expect(level.keyQuestion).not.toBe('');
+      expect(level.meaning).not.toBe('');
+      expect(level.challenges).not.toBe('');
+      expect(level.nextStep).not.toBe('');
+    });
   });
 });

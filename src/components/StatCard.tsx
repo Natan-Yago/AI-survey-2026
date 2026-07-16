@@ -11,10 +11,16 @@ interface StatCardProps {
 
 export default function StatCard({ stat, caption, icon, palette }: StatCardProps) {
   const Icon = FACT_ICON_COMPONENTS[icon];
+  const figureClassName = stat.includes('→')
+    ? 'stat-figure stat-figure--trend font-latin'
+    : 'stat-figure font-latin';
+
   return (
-    <div className={`option-card surface-card stat-card palette-${palette}`}>
+    <div className={`option-card surface-card summary-glass-card stat-card palette-${palette}`}>
       <div className="stat-body">
-        <span className="stat-figure font-latin">{stat}</span>
+        <span className={figureClassName}>
+          <bdi dir="ltr">{stat}</bdi>
+        </span>
         <p className="stat-caption">{caption}</p>
       </div>
       <span className="stat-icon-tile" aria-hidden="true">

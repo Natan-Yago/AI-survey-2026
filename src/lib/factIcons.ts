@@ -6,6 +6,7 @@ import {
   CpuChipIcon,
   LightBulbIcon,
   RocketLaunchIcon,
+  ShieldCheckIcon,
   SparklesIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
@@ -27,4 +28,5 @@ export const FACT_ICON_COMPONENTS: Record<FactIcon, ComponentType<SVGProps<SVGSV
   cpu: CpuChipIcon,
   bulb: LightBulbIcon,
   sparkles: SparklesIcon,
+  shield: ShieldCheckIcon,
 };

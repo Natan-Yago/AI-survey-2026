@@ -5,7 +5,7 @@ import { AnswersProvider, useAnswers } from './AnswersContext';
 
 const wrapper = ({ children }: { children: ReactNode }) => <AnswersProvider>{children}</AnswersProvider>;
 
-const ANSWERS_KEY = 'ai-survey-answers-v1';
+const ANSWERS_KEY = 'ai-survey-answers-v2';
 const SEEN_FACTS_KEY = 'ai-survey:seenFacts-v2';
 
 describe('AnswersContext', () => {

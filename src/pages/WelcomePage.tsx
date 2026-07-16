@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAnswers } from '../state/AnswersContext';
+import { TOTAL_QUESTIONS } from '../data/questions';
 
 const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 
 export default function WelcomePage() {
   const { lastQuestionIndex, answers } = useAnswers();
   const hasProgress = Object.keys(answers).length > 0;
-  const resumeIndex = Math.max(0, Math.min(lastQuestionIndex, 31));
+  const resumeIndex = Math.max(0, Math.min(lastQuestionIndex, TOTAL_QUESTIONS - 1));
 
   useEffect(() => {
     document.title = 'סקר בשלות AI · ברוכים הבאים';

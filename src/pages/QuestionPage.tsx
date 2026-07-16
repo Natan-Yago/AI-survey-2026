@@ -17,7 +17,7 @@ import FactModal from '../components/FactModal';
 import { FACT_BY_QUESTION_INDEX } from '../data/facts';
 
 const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
-const MATRIX_TABLE_QUESTION_INDEXES = new Set([7, 9, 13, 16, 31]);
+const MATRIX_TABLE_QUESTION_INDEXES = new Set([7, 9, 13, 14, 17, 19, 34]);
 
 function clampIndex(n: number): number {
   if (Number.isNaN(n)) return 0;
@@ -153,7 +153,7 @@ export default function QuestionPage() {
         let countInColumn = 0;
         current.forEach((k) => { if (k.endsWith(`:${columnIndex}`)) countInColumn += 1; });
         if (countInColumn >= max) {
-          setNote(`ניתן לבחור עד ${max} חסמים בכל עמודה.`);
+          setNote(`ניתן לבחור עד ${max} אפשרויות בכל עמודה.`);
           return;
         }
       }
@@ -175,25 +175,19 @@ export default function QuestionPage() {
       return;
     }
 
-    const next = new Set(current);
-    const rowPrefix = `${rowIndex}:`;
-    current.forEach((k) => {
-      if (k.startsWith(rowPrefix)) next.delete(k);
-    });
-
     const max = q.maxPerColumn;
     if (max !== undefined) {
       let countInColumn = 0;
-      next.forEach((k) => { if (k.endsWith(`:${columnIndex}`)) countInColumn += 1; });
+      current.forEach((k) => { if (k.endsWith(`:${columnIndex}`)) countInColumn += 1; });
       if (countInColumn >= max) {
-        setNote(`ניתן לבחור עד ${max} חסמים בכל עמודה.`);
+        setNote(`ניתן לבחור עד ${max} אפשרויות בכל עמודה.`);
         return;
       }
     }
 
-    next.add(optionKey);
+    current.add(optionKey);
     setNote('');
-    setAnswer(idx, Array.from(next).sort());
+    setAnswer(idx, Array.from(current).sort());
   }
 
   function renderQuestionBody() {

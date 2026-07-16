@@ -55,13 +55,13 @@ async function goToNextQuestion(page: Page) {
 }
 
 test.describe('Full survey journey', () => {
-  test('Welcome → answering all 32 questions → Summary shows a maturity level and score', async ({ page }) => {
+  test('Welcome → answering all 35 questions → Summary shows a maturity level and score', async ({ page }) => {
     await clearStorage(page);
 
     await page.getByRole('link', { name: 'התחל סקר ←' }).click();
     await expect(page).toHaveURL(/#\/q\/1$/);
 
-    for (let i = 0; i < 32; i++) {
+    for (let i = 0; i < 35; i++) {
       await answerCurrentQuestion(page);
       await goToNextQuestion(page);
     }

@@ -1,9 +1,7 @@
 import type { Fact, MatrixMultiAnswer, MatrixSingleAnswer, SingleAnswer } from '../types';
 
-// `questionIndex` is the literal brief question number minus one. For example,
-// "שאלה 14" appears on survey question 14, not wherever that topic appears in
-// the current survey order. `summaryQuestionIndex` preserves the older
-// topic-based answer lookup used only by Summary benchmark filtering.
+// `questionIndex` controls where the mid-survey fact popup appears.
+// `summaryQuestionIndex` identifies the related answer for optional filtering.
 
 const isNum = (v: unknown): v is number => typeof v === 'number';
 
@@ -28,7 +26,7 @@ export const FACTS: Fact[] = [
     emoji: '⚡',
     text: 'בעולם, כיום רוב הארגונים צורכים בין 1B ל־10B טוקנים בחודש, אך עד 2028 רובם צפויים לעבור את רף ה־10B.',
     stat: '10B+',
-    caption: 'טוקנים בחודש — היעד שרוב הארגונים צפויים לעבור עד 2028',
+    caption: 'טוקנים בחודש, היעד שרוב הארגונים צפויים לעבור עד 2028',
     icon: 'bolt',    palette: 2,    // Show when daily usage among access-holders is below 41% (options 0..1, skipping "don\u2019t know" at idx 5).
     shouldShow: (a) => isNum(a) && (a as SingleAnswer) <= 1,
   },
@@ -51,13 +49,13 @@ export const FACTS: Fact[] = [
     },
   },
   {
-    questionIndex: 15,
-    summaryQuestionIndex: 16,
+    questionIndex: 16,
+    summaryQuestionIndex: 17,
     title: 'תועלות מ־AI',
     emoji: '💰',
     text: 'בעולם, 74% מהארגונים מקווים להגדיל הכנסות באמצעות AI, אך רק 20% עושים זאת כיום בפועל.',
-    stat: '74%',
-    caption: 'מהארגונים מקווים להגדיל הכנסות באמצעות AI — רק 20% עושים זאת כיום',
+    stat: '20%',
+    caption: 'מהארגונים כבר מגדילים הכנסות באמצעות AI, 74% מצפים להגיע לכך',
     icon: 'cash',
     palette: 4,
     // matrix-multi: row 2 = "הגדלת הכנסות". Column 0 = achieved today, column 1 = hoped for.
@@ -68,12 +66,12 @@ export const FACTS: Fact[] = [
     },
   },
   {
-    questionIndex: 16,
-    summaryQuestionIndex: 17,
+    questionIndex: 17,
+    summaryQuestionIndex: 18,
     title: 'טרנספורמציית תהליכים',
     emoji: '🔄',
     text: 'על פי הסקר העולמי של Deloitte, רק כשליש מהארגונים בעולם משתמשים ב־AI לטרנספורמציה עמוקה של מוצרים, תהליכים ומודלים עסקיים.',
-    stat: '~⅓',
+    stat: '⅓',
     caption: 'מהארגונים משתמשים ב-AI לטרנספורמציה עמוקה של מוצרים ותהליכים',
     icon: 'refresh',
     palette: 5,
@@ -81,8 +79,8 @@ export const FACTS: Fact[] = [
     shouldShow: (a) => isNum(a) && (a as SingleAnswer) <= 1,
   },
   {
-    questionIndex: 18,
-    summaryQuestionIndex: 19,
+    questionIndex: 21,
+    summaryQuestionIndex: 22,
     title: 'עיצוב מחדש של תפקידים',
     emoji: '👥',
     text: 'בעולם, 84% מהארגונים עדיין לא עיצבו מחדש תפקידים סביב יכולות AI.',
@@ -94,13 +92,13 @@ export const FACTS: Fact[] = [
     shouldShow: (a) => isNum(a) && (a as SingleAnswer) <= 1,
   },
   {
-    questionIndex: 20,
-    summaryQuestionIndex: 21,
+    questionIndex: 23,
+    summaryQuestionIndex: 24,
     title: 'אוטומציה של משרות',
     emoji: '🤖',
     text: 'על פי הסקר העולמי של Deloitte לשנת 2026, יותר משליש מהארגונים בעולם מצפים שלפחות 10% מהמשרות יעברו אוטומציה מלאה כבר בתוך שנה.',
-    stat: '>⅓',
-    caption: 'מהארגונים מצפים לאוטומציה מלאה של 10%+ מהמשרות תוך שנה',
+    stat: '10%+',
+    caption: 'מהמשרות צפויות לעבור אוטומציה מלאה בתוך שנה לפי לפחות שליש מהארגונים',
     icon: 'cpu',
     palette: 7,
     // matrix-column-single: column 0 = "within a year". Row 0 = "<10%". Show when "within a year" answer is row 0.
@@ -110,25 +108,25 @@ export const FACTS: Fact[] = [
     },
   },
   {
-    questionIndex: 24,
-    summaryQuestionIndex: 25,
+    questionIndex: 27,
+    summaryQuestionIndex: 28,
     title: 'עובדים לא טכנולוגיים',
     emoji: '💡',
     text: 'בסקר הגלובלי של Deloitte, 55% מהעובדים הלא טכנולוגיים פתוחים להתנסות ב־AI, אבל רק 13% מחפשים אותו באופן יזום.',
     stat: '55%',
-    caption: 'מהעובדים הלא-טכנולוגיים פתוחים להתנסות ב-AI — רק 13% יזומים',
+    caption: 'מהעובדים הלא-טכנולוגיים פתוחים להתנסות ב-AI, רק 13% יזומים',
     icon: 'bulb',
     palette: 8,
     // Options 0..4 progressing from distrust → enthusiasm. Show when below "interested" (<3).
     shouldShow: (a) => isNum(a) && (a as SingleAnswer) <= 2,
   },
   {
-    questionIndex: 28,
-    summaryQuestionIndex: 29,
+    questionIndex: 31,
+    summaryQuestionIndex: 32,
     title: 'שימוש ב־Agentic AI',
     emoji: '🧠',
-    text: 'על פי הסקר העולמי של Deloitte לשנת 2026, השימוש המשמעותי ב־Agentic AI צפוי לגדול מ־23% כיום ל־74% בתוך שנתיים. אך רק 21% מהארגונים מדווחים שיש להם מודל governance בוגר לסוכני AI אוטונומיים.',
-    stat: '23% ← 74%',
+    text: 'על פי הסקר העולמי של Deloitte לשנת 2026, השימוש המשמעותי ב־Agentic AI צפוי לגדול מ־23% כיום ל־74% בתוך שנתיים.',
+    stat: '23% → 74%',
     caption: 'צפי לגידול שימוש משמעותי ב-Agentic AI תוך שנתיים',
     icon: 'sparkles',
     palette: 9,
@@ -138,6 +136,18 @@ export const FACTS: Fact[] = [
       const today = m?.[0];
       return isNum(today) && today <= 1;
     },
+  },
+  {
+    questionIndex: 32,
+    summaryQuestionIndex: 32,
+    title: 'ממשל לסוכני AI',
+    emoji: '🛡️',
+    text: 'רק 21% מהארגונים מדווחים שיש להם מודל governance בוגר לסוכני AI אוטונומיים.',
+    stat: '21%',
+    caption: 'מהארגונים מחזיקים במודל Governance בוגר לסוכני AI אוטונומיים',
+    icon: 'shield',
+    palette: 10,
+    shouldShow: (a) => isNum(a) && (a as SingleAnswer) <= 2,
   },
 ];
 

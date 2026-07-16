@@ -33,15 +33,15 @@ describe('computeScore', () => {
 
   it('rounds/averages correctly across multiple scored questions', () => {
     // Q9 (idx 8, singleAsc5(5)): answer 0 → score 1
-    // Q16 (idx 15, singleAsc5()): answer 4 → score 5
-    const result = computeScore({ q9: 0, q16: 4 });
+    // Q17 (idx 16, singleAsc5()): answer 4 → score 5
+    const result = computeScore({ q9: 0, q17: 4 });
     expect(result.count).toBe(2);
     expect(result.average).toBe(3); // (1 + 5) / 2
   });
 
   it('handles decimal precision without rounding error blowing up', () => {
     // Three single-question scores: 1, 3, 4 → average 2.666...
-    const result = computeScore({ q16: 0, q18: 2, q20: 3 });
+    const result = computeScore({ q17: 0, q19: 2, q23: 3 });
     expect(result.count).toBe(3);
     expect(result.average).toBeCloseTo(8 / 3, 10);
   });
@@ -59,9 +59,9 @@ describe('computeScore', () => {
       [3, 4], // score 4 → Level 4
       [4, 5], // score 5 → Level 5
     ])('a single scored answer of %s (score %s) resolves to the matching level id', (answerIdx, expectedId) => {
-      // Q26 (idx 25) is singleAsc5(): score = answer + 1, giving an exact
+      // Q29 (idx 28) is singleAsc5(): score = answer + 1, giving an exact
       // integer average that lands squarely inside each level's range.
-      const result = computeScore({ q26: answerIdx });
+      const result = computeScore({ q29: answerIdx });
       expect(result.average).toBe(answerIdx + 1);
       expect(result.level.id).toBe(expectedId);
     });
@@ -122,50 +122,65 @@ describe('computeScore', () => {
       expect(computeScore({ q13: { 0: 0 } }).count).toBe(0);
     });
 
-    it('Q16 (idx 15, single, singleAsc5(), no skip): answer 0 → 1, answer 4 → 5', () => {
-      expect(computeScore({ q16: 0 }).perQuestion[15]).toBe(1);
-      expect(computeScore({ q16: 4 }).perQuestion[15]).toBe(5);
+    it('Q17 (idx 16, single, singleAsc5(), no skip): answer 0 → 1, answer 4 → 5', () => {
+      expect(computeScore({ q17: 0 }).perQuestion[16]).toBe(1);
+      expect(computeScore({ q17: 4 }).perQuestion[16]).toBe(5);
     });
 
-    it('Q18 (idx 17, single, singleAsc5())', () => {
-      expect(computeScore({ q18: 2 }).perQuestion[17]).toBe(3);
+    it('Q19 (idx 18, single, singleAsc5())', () => {
+      expect(computeScore({ q19: 2 }).perQuestion[18]).toBe(3);
     });
 
-    it('Q20 (idx 19, single, singleAsc5())', () => {
-      expect(computeScore({ q20: 2 }).perQuestion[19]).toBe(3);
+    it('Q21 token economy management (idx 20, singleAsc5())', () => {
+      expect(computeScore({ q21: 0 }).perQuestion[20]).toBe(1);
+      expect(computeScore({ q21: 4 }).perQuestion[20]).toBe(5);
     });
 
-    it('Q21 (idx 20, single, singleAsc5())', () => {
-      expect(computeScore({ q21: 2 }).perQuestion[20]).toBe(3);
+    it('Q23 (idx 22, single, singleAsc5())', () => {
+      expect(computeScore({ q23: 2 }).perQuestion[22]).toBe(3);
     });
 
-    it('Q22 (idx 21, matrix-column-single, row+1 scoring)', () => {
-      const result = computeScore({ q22: { 0: 0, 1: 4, 2: 2 } });
-      expect(result.perQuestion[21]).toBe(3); // (1 + 5 + 3) / 3
+    it('Q24 (idx 23, single, singleAsc5())', () => {
+      expect(computeScore({ q24: 2 }).perQuestion[23]).toBe(3);
     });
 
-    it('Q26 (idx 25, single, singleAsc5())', () => {
-      expect(computeScore({ q26: 2 }).perQuestion[25]).toBe(3);
+    it('Q25 (idx 24, matrix-column-single, row+1 scoring)', () => {
+      const result = computeScore({ q25: { 0: 0, 1: 4, 2: 2 } });
+      expect(result.perQuestion[24]).toBe(3); // (1 + 5 + 3) / 3
     });
 
-    it('Q27 (idx 26, single, singleAsc5())', () => {
-      expect(computeScore({ q27: 2 }).perQuestion[26]).toBe(3);
-    });
-
-    it('Q29 (idx 28, matrix-single, matrixAsc5)', () => {
-      const result = computeScore({ q29: { 0: 0, 1: 4 } });
-      expect(result.perQuestion[28]).toBe(3); // (1 + 5) / 2
+    it('Q29 (idx 28, single, singleAsc5())', () => {
+      expect(computeScore({ q29: 2 }).perQuestion[28]).toBe(3);
     });
 
     it('Q30 (idx 29, single, singleAsc5())', () => {
       expect(computeScore({ q30: 2 }).perQuestion[29]).toBe(3);
     });
 
-    it('Q32 (idx 31, matrix-single, custom mapping, skips "don\'t know" col 4)', () => {
-      const result = computeScore({ q32: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 } });
+    it('Q32 (idx 31, matrix-single, matrixAsc5)', () => {
+      const result = computeScore({ q32: { 0: 0, 1: 4 } });
+      expect(result.perQuestion[31]).toBe(3); // (1 + 5) / 2
+    });
+
+    it('Q33 (idx 32, single, singleAsc5())', () => {
+      expect(computeScore({ q33: 2 }).perQuestion[32]).toBe(3);
+    });
+
+    it('Q35 (idx 34, matrix-single, custom mapping, skips "don\'t know" col 4)', () => {
+      const result = computeScore({ q35: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 } });
       // scores: 5,4,3,2 (col 4 = don't know, skipped)
-      expect(result.perQuestion[31]).toBe(3.5);
+      expect(result.perQuestion[34]).toBe(3.5);
       expect(result.count).toBe(4);
+    });
+
+    it('does not score competitive impact or token-consumption volume', () => {
+      const result = computeScore({
+        q15: { 0: 4, 1: 4, 2: 4, 3: 4, 4: 4 },
+        q20: { 0: 4, 1: 4 },
+      });
+      expect(result.count).toBe(0);
+      expect(result.perQuestion[14]).toBeUndefined();
+      expect(result.perQuestion[19]).toBeUndefined();
     });
   });
 
@@ -223,9 +238,9 @@ describe('isQuestionAnswered', () => {
   });
 
   it('matrix-column-single: requires an entry for every column', () => {
-    // Q22 (idx 21) has 3 columns.
-    expect(isQuestionAnswered(21, {})).toBe(false);
-    expect(isQuestionAnswered(21, { q22: { 0: 1, 1: 2 } })).toBe(false);
-    expect(isQuestionAnswered(21, { q22: { 0: 1, 1: 2, 2: 3 } })).toBe(true);
+    // Q25 (idx 24) has 3 columns.
+    expect(isQuestionAnswered(24, {})).toBe(false);
+    expect(isQuestionAnswered(24, { q25: { 0: 1, 1: 2 } })).toBe(false);
+    expect(isQuestionAnswered(24, { q25: { 0: 1, 1: 2, 2: 3 } })).toBe(true);
   });
 });

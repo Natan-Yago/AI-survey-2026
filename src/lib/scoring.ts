@@ -81,30 +81,33 @@ export const QUESTION_SCORERS: ScoringConfig[] = [
       });
   },
   null, // Q14 matrix-multi blockers
-  null, // Q15 multi IT investments
-  singleAsc5(), // Q16 infrastructure confidence — 5 options asc
-  null, // Q17 matrix-multi benefits
-  singleAsc5(), // Q18 process transformation approach — 5 options asc
-  null, // Q19 multi risks
-  singleAsc5(), // Q20 roles redesign — 5 options asc
-  singleAsc5(), // Q21 productivity impact — 5 options asc
-  // Q22 matrix-column-single job automation — rows 0..4 = <10% .. 76-100%. Higher % = more AI ambition.
+  null, // Q15 competitive impact — perception, not organizational maturity
+  null, // Q16 multi IT investments
+  singleAsc5(), // Q17 infrastructure confidence — 5 options asc
+  null, // Q18 matrix-multi benefits
+  singleAsc5(), // Q19 process transformation approach — 5 options asc
+  null, // Q20 token consumption — volume is not organizational maturity
+  singleAsc5(), // Q21 token economy management — 5 options asc
+  null, // Q22 multi risks
+  singleAsc5(), // Q23 roles redesign — 5 options asc
+  singleAsc5(), // Q24 productivity impact — 5 options asc
+  // Q25 matrix-column-single job automation — rows 0..4 = <10% .. 76-100%. Higher % = more AI ambition.
   // Each column contributes (rowIndex+1) as score.
   (answer) => {
     const m = answer as MatrixSingleAnswer | undefined;
     if (!m) return [];
     return Object.values(m).filter(isNum).map((r) => r + 1);
   },
-  null, // Q23 main challenge — non-ordinal
-  null, // Q24 multi talent strategy
-  null, // Q25 FTE change — non-ordinal (decrease vs increase doesn't map cleanly)
-  singleAsc5(), // Q26 non-tech comfort — 5 options, order is roughly progressive
-  singleAsc5(), // Q27 GenAI usage — 5 options asc
-  null, // Q28 GenAI impact area — non-ordinal
-  matrixAsc5, // Q29 Agentic AI usage — 5 cols asc
-  singleAsc5(), // Q30 governance model — 5 options asc
-  null, // Q31 Agentic impact area — non-ordinal
-  // Q32 time to solve blockers — cols: "already solved", "12mo", "2yr", ">2yr", "don't know".
+  null, // Q26 main challenge — non-ordinal
+  null, // Q27 multi talent strategy
+  null, // Q28 FTE change — non-ordinal (decrease vs increase doesn't map cleanly)
+  singleAsc5(), // Q29 non-tech comfort — 5 options, order is roughly progressive
+  singleAsc5(), // Q30 GenAI usage — 5 options asc
+  null, // Q31 GenAI impact area — non-ordinal
+  matrixAsc5, // Q32 Agentic AI usage — 5 cols asc
+  singleAsc5(), // Q33 governance model — 5 options asc
+  null, // Q34 Agentic impact area — non-ordinal
+  // Q35 time to solve blockers — cols: "already solved", "12mo", "2yr", ">2yr", "don't know".
   // Skip "don't know" (idx 4). Map 0..3 → 5,4,3,2.
   (answer) => {
     const m = answer as MatrixSingleAnswer | undefined;

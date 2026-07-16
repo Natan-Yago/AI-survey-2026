@@ -68,9 +68,10 @@ export interface MaturityLevel {
   nameHe: string;
   nameEn: string;
   range: [number, number]; // inclusive lower, inclusive upper avg score
-  shortDesc: string;
-  positioning: string;
-  implications: string[];
+  keyQuestion: string;
+  meaning: string;
+  challenges: string;
+  nextStep: string;
 }
 
 /**
@@ -87,7 +88,8 @@ export type FactIcon =
   | 'users'
   | 'cpu'
   | 'bulb'
-  | 'sparkles';
+  | 'sparkles'
+  | 'shield';
 
 export interface Fact {
   /** Zero-based question index in the survey array */
@@ -109,7 +111,7 @@ export interface Fact {
    * Summary stat card and the per-question "הידעת?" popup. Keeping this on
    * the fact ensures the same fact always renders in the same color.
    */
-  palette: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+  palette: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
   /**
    * Optional predicate used by the Summary page to decide whether to
    * surface this fact based on the user's answer. The question-page popup
