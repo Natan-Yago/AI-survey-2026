@@ -101,8 +101,8 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     const expected = computeScore(answers);
     renderApp(['/summary']);
 
-    expect(screen.getByRole('heading', { level: 1, name: 'פרופיל הבשלות של הארגון ב-AI' })).toBeInTheDocument();
-    expect(screen.getByText('הערכת הבשלות הארגונית לאימוץ ופיתוח AI')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'AI in Action' })).toBeInTheDocument();
+    expect(screen.getByText(`על סמך הנתונים שמילאת הארגון שלך נמצא בשלב ${expected.level.id}`)).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: `Level ${expected.level.id} - ${expected.level.nameEn}` })).toBeInTheDocument();
     expect(screen.getByText(expected.average.toFixed(2))).toBeInTheDocument();
     expect(screen.getByText(`${expected.count} answers scored`)).toBeInTheDocument();
@@ -119,6 +119,9 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     const journey = screen.getByLabelText('שלב במסע ה-AI');
     ['Exploring', 'Building', 'Scaling', 'Transforming', 'AI-First'].forEach((name) => {
       expect(within(journey).getByText(name)).toBeInTheDocument();
+    });
+    ['בוחנים', 'בונים', 'מרחיבים', 'משנים', 'מובילים'].forEach((name) => {
+      expect(within(journey).queryByText(name)).not.toBeInTheDocument();
     });
     expect(screen.queryByText('השאלה הניהולית המרכזית')).not.toBeInTheDocument();
   });

@@ -65,8 +65,10 @@ export default function SummaryPage() {
             </div>
 
             <header className="summary-profile-intro">
-              <h1 className="summary-profile-title">פרופיל הבשלות של הארגון ב-AI</h1>
-              <p className="summary-profile-description">הערכת הבשלות הארגונית לאימוץ ופיתוח AI</p>
+              <h1 className="summary-profile-title font-latin">AI in Action</h1>
+              <p className="summary-profile-description">
+                על סמך הנתונים שמילאת הארגון שלך נמצא בשלב {level.id}
+              </p>
             </header>
 
             <h2 className="summary-level-title">
@@ -99,7 +101,6 @@ export default function SummaryPage() {
                     </span>
                     <span className="stage-step-label">
                       <strong className="font-latin">{s.nameEn}</strong>
-                      <span dir="rtl">{s.nameHe}</span>
                     </span>
                     <span className="stage-dot" aria-hidden="true"></span>
                   </div>
