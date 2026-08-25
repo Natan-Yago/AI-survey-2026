@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { clearState, loadState, saveState, type PersistedState } from './storage';
 
-const STORAGE_KEY = 'ai-survey-answers-v2';
+const STORAGE_KEY = 'ai-survey-answers-v3';
 
 describe('storage', () => {
   afterEach(() => {

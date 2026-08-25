@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { AnswerValue, AnswersMap } from '../types';
 import { loadState, saveState, clearState } from '../lib/storage';
 
-const SEEN_FACTS_KEY = 'ai-survey:seenFacts-v2';
+const SEEN_FACTS_KEY = 'ai-survey:seenFacts-v3';
 
 function loadSeenFacts(): Set<number> {
   try {

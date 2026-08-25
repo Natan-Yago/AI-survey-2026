@@ -99,9 +99,10 @@ describe('computeScore', () => {
       expect(computeScore({ q9: 5 }).count).toBe(0);
     });
 
-    it('Q10 (idx 9, matrix-single, custom [1,3,5] map)', () => {
-      const result = computeScore({ q10: { 0: 0, 1: 1, 2: 2 } });
+    it('Q10 (idx 9, matrix-single): skips not relevant / unknown and maps active stages 1..5', () => {
+      const result = computeScore({ q10: { 0: 0, 1: 1, 2: 3, 3: 5, 4: 6 } });
       expect(result.perQuestion[9]).toBe(3); // (1 + 3 + 5) / 3
+      expect(result.count).toBe(3);
     });
 
     it('Q11 (idx 10, single, singleDesc5(5)): answer 0 (80%+) = best (5), idx 5 skipped', () => {
@@ -115,60 +116,69 @@ describe('computeScore', () => {
       expect(computeScore({ q12: 5 }).count).toBe(0);
     });
 
-    it('Q13 (idx 12, matrix-single, percentage binning): skips "don\'t know" col 0', () => {
-      // col 1 → 0% → bin 1; col 11 → 100% → bin 5; col 0 → don't know → skipped
-      const result = computeScore({ q13: { 0: 1, 1: 11 } });
+    it('Q13 (idx 12, matrix-single): skips no-pilots / unknown and maps percentage bands', () => {
+      const result = computeScore({ q13: { 0: 2, 1: 7 } });
       expect(result.perQuestion[12]).toBe(3); // (1 + 5) / 2
-      expect(computeScore({ q13: { 0: 0 } }).count).toBe(0);
+      expect(computeScore({ q13: { 0: 0, 1: 1 } }).count).toBe(0);
     });
 
-    it('Q17 (idx 16, single, singleAsc5(), no skip): answer 0 → 1, answer 4 → 5', () => {
+    it('Q17 (idx 16, single): answers 0..4 map to 1..5 and unknown is skipped', () => {
       expect(computeScore({ q17: 0 }).perQuestion[16]).toBe(1);
       expect(computeScore({ q17: 4 }).perQuestion[16]).toBe(5);
+      expect(computeScore({ q17: 5 }).count).toBe(0);
     });
 
     it('Q19 (idx 18, single, singleAsc5())', () => {
       expect(computeScore({ q19: 2 }).perQuestion[18]).toBe(3);
     });
 
-    it('Q21 token economy management (idx 20, singleAsc5())', () => {
+    it('Q21 token economy management (idx 20): skips unknown', () => {
       expect(computeScore({ q21: 0 }).perQuestion[20]).toBe(1);
       expect(computeScore({ q21: 4 }).perQuestion[20]).toBe(5);
+      expect(computeScore({ q21: 5 }).count).toBe(0);
     });
 
     it('Q23 (idx 22, single, singleAsc5())', () => {
       expect(computeScore({ q23: 2 }).perQuestion[22]).toBe(3);
     });
 
-    it('Q24 (idx 23, single, singleAsc5())', () => {
+    it('Q24 (idx 23): skips too early and unknown', () => {
       expect(computeScore({ q24: 2 }).perQuestion[23]).toBe(3);
+      expect(computeScore({ q24: 5 }).count).toBe(0);
+      expect(computeScore({ q24: 6 }).count).toBe(0);
     });
 
-    it('Q25 (idx 24, matrix-column-single, row+1 scoring)', () => {
-      const result = computeScore({ q25: { 0: 0, 1: 4, 2: 2 } });
-      expect(result.perQuestion[24]).toBe(3); // (1 + 5 + 3) / 3
+    it('Q25 (idx 24, matrix-column-single): maps percentage bands and skips too early', () => {
+      const result = computeScore({ q25: { 0: 0, 1: 3, 2: 4 } });
+      expect(result.perQuestion[24]).toBe(3); // (1 + 5) / 2
+      expect(result.count).toBe(2);
     });
 
-    it('Q29 (idx 28, single, singleAsc5())', () => {
+    it('Q29 (idx 28): skips unknown', () => {
       expect(computeScore({ q29: 2 }).perQuestion[28]).toBe(3);
+      expect(computeScore({ q29: 5 }).count).toBe(0);
     });
 
-    it('Q30 (idx 29, single, singleAsc5())', () => {
+    it('Q30 (idx 29): skips unknown', () => {
       expect(computeScore({ q30: 2 }).perQuestion[29]).toBe(3);
+      expect(computeScore({ q30: 5 }).count).toBe(0);
     });
 
     it('Q32 (idx 31, matrix-single, matrixAsc5)', () => {
       const result = computeScore({ q32: { 0: 0, 1: 4 } });
       expect(result.perQuestion[31]).toBe(3); // (1 + 5) / 2
+      expect(computeScore({ q32: { 0: 5 } }).count).toBe(0);
     });
 
-    it('Q33 (idx 32, single, singleAsc5())', () => {
+    it('Q33 (idx 32): skips not relevant and unknown', () => {
       expect(computeScore({ q33: 2 }).perQuestion[32]).toBe(3);
+      expect(computeScore({ q33: 5 }).count).toBe(0);
+      expect(computeScore({ q33: 6 }).count).toBe(0);
     });
 
-    it('Q35 (idx 34, matrix-single, custom mapping, skips "don\'t know" col 4)', () => {
-      const result = computeScore({ q35: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 } });
-      // scores: 5,4,3,2 (col 4 = don't know, skipped)
+    it('Q35 (idx 34): maps resolution timing and skips too early / unknown', () => {
+      const result = computeScore({ q35: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 } });
+      // scores: 5,4,3,2 (cols 4 and 5 skipped)
       expect(result.perQuestion[34]).toBe(3.5);
       expect(result.count).toBe(4);
     });
@@ -208,7 +218,7 @@ describe('computeScore', () => {
     });
 
     it('computes correct decimal precision for an uneven split of scores', () => {
-      const result = computeScore({ q13: { 0: 1, 1: 6 } }); // bins: 1 and 3
+      const result = computeScore({ q13: { 0: 2, 1: 5 } }); // bins: 1 and 3
       expect(result.average).toBe(2); // (1+3)/2
     });
   });

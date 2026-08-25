@@ -32,13 +32,13 @@ const singleDesc5 = (skipFromIndex?: number): Scorer => (answer) => {
 const matrixAsc5: Scorer = (answer) => {
   const m = answer as MatrixSingleAnswer | undefined;
   if (!m) return [];
-  return Object.values(m).filter(isNum).map((c) => c + 1);
+  return Object.values(m).filter(isNum).filter((c) => c < 5).map((c) => c + 1);
 };
 /** Matrix-single with 5 ordinal columns, descending (col 0 = highest maturity). */
 const matrixDesc5: Scorer = (answer) => {
   const m = answer as MatrixSingleAnswer | undefined;
   if (!m) return [];
-  return Object.values(m).filter(isNum).map((c) => 5 - c);
+  return Object.values(m).filter(isNum).filter((c) => c < 5).map((c) => 5 - c);
 };
 
 export type ScoringConfig = Scorer | null;
@@ -52,63 +52,52 @@ export const QUESTION_SCORERS: ScoringConfig[] = [
   matrixAsc5,
   // Q9 investment change — 6 options, skip last (don't know). asc 1..5.
   singleAsc5(5),
-  // Q10 adoption by function — 3 columns (no plans / pilots / scaled). Map 1, 3, 5.
+  // Q10 adoption by function — skip not relevant / unknown; map active stages 1..5.
   (answer) => {
     const m = answer as MatrixSingleAnswer | undefined;
     if (!m) return [];
-    const map = [1, 3, 5];
+    const map = [0, 1, 2, 3, 4, 5, 0];
     return Object.values(m).filter(isNum).map((c) => map[c] ?? 0).filter((s) => s > 0);
   },
   // Q11 access to AI tools — desc (80%+ at idx 0 = best), 6 options, skip last.
   singleDesc5(5),
   // Q12 daily usage — asc (idx 4 = >80%), skip last.
   singleAsc5(5),
-  // Q13 pilots-to-prod — 12 cols: col 0 = "don't know", cols 1..11 = 0%..100%.
-  // Bin to 1–5: 0–10% → 1, 20–30% → 2, 40–50% → 3, 60–70% → 4, 80–100% → 5.
+  // Q13 pilots-to-prod — skip no pilots / unknown; map the six percentage bands to 1–5.
   (answer) => {
     const m = answer as MatrixSingleAnswer | undefined;
     if (!m) return [];
-    return Object.values(m)
-      .filter(isNum)
-      .filter((c) => c > 0) // skip "don't know"
-      .map((c) => {
-        const pct = (c - 1) * 10; // c=1 → 0%, c=11 → 100%
-        if (pct <= 10) return 1;
-        if (pct <= 30) return 2;
-        if (pct <= 50) return 3;
-        if (pct <= 70) return 4;
-        return 5;
-      });
+    const map = [0, 0, 1, 1, 2, 3, 4, 5];
+    return Object.values(m).filter(isNum).map((c) => map[c] ?? 0).filter((s) => s > 0);
   },
   null, // Q14 matrix-multi blockers
   null, // Q15 competitive impact — perception, not organizational maturity
   null, // Q16 multi IT investments
-  singleAsc5(), // Q17 infrastructure confidence — 5 options asc
+  singleAsc5(5), // Q17 infrastructure confidence — 5 ordinal options, then unknown
   null, // Q18 matrix-multi benefits
   singleAsc5(), // Q19 process transformation approach — 5 options asc
   null, // Q20 token consumption — volume is not organizational maturity
-  singleAsc5(), // Q21 token economy management — 5 options asc
+  singleAsc5(5), // Q21 token economy management — 5 ordinal options, then unknown
   null, // Q22 multi risks
   singleAsc5(), // Q23 roles redesign — 5 options asc
-  singleAsc5(), // Q24 productivity impact — 5 options asc
-  // Q25 matrix-column-single job automation — rows 0..4 = <10% .. 76-100%. Higher % = more AI ambition.
-  // Each column contributes (rowIndex+1) as score.
+  singleAsc5(5), // Q24 productivity impact — 5 ordinal options, then too early / unknown
+  // Q25 matrix-column-single task automation — four percentage bands, then too early.
   (answer) => {
     const m = answer as MatrixSingleAnswer | undefined;
     if (!m) return [];
-    return Object.values(m).filter(isNum).map((r) => r + 1);
+    const map = [1, 2, 3, 5, 0];
+    return Object.values(m).filter(isNum).map((r) => map[r] ?? 0).filter((s) => s > 0);
   },
   null, // Q26 main challenge — non-ordinal
   null, // Q27 multi talent strategy
   null, // Q28 FTE change — non-ordinal (decrease vs increase doesn't map cleanly)
-  singleAsc5(), // Q29 non-tech comfort — 5 options, order is roughly progressive
-  singleAsc5(), // Q30 GenAI usage — 5 options asc
+  singleAsc5(5), // Q29 non-tech adoption — 5 ordinal options, then unknown
+  singleAsc5(5), // Q30 GenAI usage — 5 ordinal options, then unknown
   null, // Q31 GenAI impact area — non-ordinal
   matrixAsc5, // Q32 Agentic AI usage — 5 cols asc
-  singleAsc5(), // Q33 governance model — 5 options asc
+  singleAsc5(5), // Q33 governance model — 5 ordinal options, then not relevant / unknown
   null, // Q34 Agentic impact area — non-ordinal
-  // Q35 time to solve blockers — cols: "already solved", "12mo", "2yr", ">2yr", "don't know".
-  // Skip "don't know" (idx 4). Map 0..3 → 5,4,3,2.
+  // Q35 time to address blockers — map 0..3 → 5,4,3,2; skip too early / unknown.
   (answer) => {
     const m = answer as MatrixSingleAnswer | undefined;
     if (!m) return [];

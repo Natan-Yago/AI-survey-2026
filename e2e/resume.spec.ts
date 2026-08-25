@@ -5,7 +5,7 @@ test.describe('Resume progress', () => {
     await page.goto('/');
     await page.evaluate(() => {
       localStorage.setItem(
-        'ai-survey-answers-v2',
+        'ai-survey-answers-v3',
         JSON.stringify({ answers: { q1: 0, q2: 1 }, lastQuestionIndex: 2 }),
       );
     });

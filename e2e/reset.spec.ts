@@ -5,7 +5,7 @@ test.describe('Reset survey', () => {
     await page.goto('/');
     await page.evaluate(() => {
       localStorage.setItem(
-        'ai-survey-answers-v2',
+        'ai-survey-answers-v3',
         JSON.stringify({ answers: { q17: 4, q19: 4 }, lastQuestionIndex: 34 }),
       );
     });
@@ -18,7 +18,7 @@ test.describe('Reset survey', () => {
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByRole('link', { name: 'התחל סקר ←' })).toBeVisible();
 
-    const stored = await page.evaluate(() => localStorage.getItem('ai-survey-answers-v2'));
+    const stored = await page.evaluate(() => localStorage.getItem('ai-survey-answers-v3'));
     expect(stored === null || JSON.parse(stored).answers).toEqual({});
   });
 });

@@ -40,12 +40,12 @@ export const FACTS: Fact[] = [
     caption: 'בלבד מהארגונים העבירו מעל 40% מניסויי ה-AI לפרודקשן',
     icon: 'rocket',
     palette: 3,
-    // matrix-single: row 0 = today, columns 0..11 (0 = "don't know", 1..11 = 0%..100%).
-    // 40% sits at column index 5. Show when user's "today" value < 5 (excluding 0 = don't know).
+    // matrix-single: row 0 = today; cols 0/1 are no-pilots/unknown and cols 2..7 are percentage bands.
+    // Show when today's production rate is below 26%.
     shouldShow: (a) => {
       const m = a as MatrixSingleAnswer | undefined;
       const today = m?.[0];
-      return isNum(today) && today > 0 && today < 5;
+      return isNum(today) && today >= 2 && today <= 4;
     },
   },
   {

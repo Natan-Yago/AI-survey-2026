@@ -30,6 +30,7 @@ export interface MultiQuestion extends BaseQuestion {
   type: 'multi';
   options: string[];
   maxSelections?: number;
+  exclusiveOptions?: number[];
 }
 
 export interface MatrixSingleQuestion extends BaseQuestion {

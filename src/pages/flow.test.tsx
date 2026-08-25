@@ -22,6 +22,7 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
   it('Welcome page shows the start CTA and navigates to Q1', async () => {
     const user = userEvent.setup();
     renderApp(['/']);
+    expect(screen.getByText('פתיח והסכמה להשתתפות')).toBeInTheDocument();
     const startLink = screen.getByRole('link', { name: 'התחל סקר ←' });
     await user.click(startLink);
     const heading = await screen.findByRole('heading', { level: 1 });
@@ -35,7 +36,7 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
 
   it('shows a resume button on Welcome when progress already exists', () => {
     localStorage.setItem(
-      'ai-survey-answers-v2',
+      'ai-survey-answers-v3',
       JSON.stringify({ answers: { q1: 0 }, lastQuestionIndex: 1 }),
     );
     renderApp(['/']);
@@ -92,10 +93,25 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     expect(screen.getByText('ניתן לבחור עד 3 אפשרויות בכל עמודה.')).toBeInTheDocument();
   });
 
+  it('Q22 keeps no-concerns and unknown answers exclusive from specific risks', async () => {
+    const user = userEvent.setup();
+    renderApp(['/q/22']);
+
+    const options = screen.getAllByRole('checkbox');
+    await user.click(options[0]);
+    await user.click(options[7]);
+    expect(options[0]).toHaveAttribute('aria-checked', 'false');
+    expect(options[7]).toHaveAttribute('aria-checked', 'true');
+
+    await user.click(options[1]);
+    expect(options[7]).toHaveAttribute('aria-checked', 'false');
+    expect(options[1]).toHaveAttribute('aria-checked', 'true');
+  });
+
   it('Summary page renders the maturity level matching computeScore() for the persisted answers', () => {
     const answers: AnswersMap = { q17: 4, q19: 4, q23: 4, q29: 4, q30: 4, q33: 4 };
     localStorage.setItem(
-      'ai-survey-answers-v2',
+      'ai-survey-answers-v3',
       JSON.stringify({ answers, lastQuestionIndex: 34 }),
     );
     const expected = computeScore(answers);
@@ -115,6 +131,8 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     expect(document.querySelectorAll('.maturity-content-block.summary-glass-card')).toHaveLength(3);
     expect(document.querySelectorAll('.stat-card.summary-glass-card')).toHaveLength(10);
     expect(document.querySelectorAll('.expert-card.summary-glass-card')).toHaveLength(2);
+    expect(screen.getByText(/אינן מהוות דירוג, הערכה מקצועית/)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'כיווני התקדמות אפשריים' })).toBeInTheDocument();
 
     const journey = screen.getByLabelText('שלב במסע ה-AI');
     ['Exploring', 'Building', 'Scaling', 'Transforming', 'AI-First'].forEach((name) => {

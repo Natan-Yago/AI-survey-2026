@@ -5,6 +5,8 @@ import { TOTAL_QUESTIONS } from '../data/questions';
 
 const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 
+const PARTICIPATION_NOTICE = 'תודה על השתתפותך בסקר. מטרת הסקר היא לאסוף תובנות מצטברות לגבי רמת האימוץ, הבשלות, האתגרים והעדיפויות של ארגונים ביחס לשימוש בבינה מלאכותית (AI), לרבות Generative AI ו-Agentic AI. הסקר מיועד לאיסוף מידע כללי ומצטבר. אין צורך למסור את שמך או את שם הארגון. התשובות ינותחו ויוצגו, ככל שיוצגו, באופן מצטבר ולא באופן שנועד לזהות משיב מסוים או ארגון מסוים. ההשתתפות בסקר היא וולונטרית. ניתן לבחור באפשרות "לא יודע/ת / לא ניתן למסור" או "לא יודע/ת / לא בטוח/ה", לפי העניין, כאשר אין בידך מידע מספיק או כאשר אינך רשאי/ת למסור מידע מסוים. המידע שייאסף עשוי לשמש את Deloitte ישראל לצרכים פנימיים, לניתוחים סטטיסטיים, להפקת תובנות מקצועיות, לפיתוח ידע ולפרסומים מקצועיים או שיווקיים המבוססים על נתונים מצטברים. הנתונים לא יוצגו באופן שנועד לזהות אותך או את הארגון שאליו את/ה משתייך/ת. בהשלמת הסקר, את/ה מאשר/ת כי קראת את האמור, מסכים/ה להשתתף בסקר ומסכים/ה לשימוש בתשובותיך למטרות המפורטות לעיל, בכפוף לכך שהמידע יוצג באופן מצטבר. הסקר ותוצאותיו אינם מהווים ייעוץ מקצועי, תחזית מחייבת, דירוג או הערכה פרטנית של ארגון כלשהו, ואינם תחליף לייעוץ המותאם לנסיבותיו של ארגון מסוים.';
+
 export default function WelcomePage() {
   const { lastQuestionIndex, answers } = useAnswers();
   const hasProgress = Object.keys(answers).length > 0;
@@ -42,6 +44,10 @@ export default function WelcomePage() {
               <p className="text-base lg:text-sm xl:text-base text-[#6B7280] leading-relaxed mb-10 lg:mb-5 xl:mb-7">
                 סקר זה נועד לבחון את מצב ה-<span className="font-latin">AI</span> בארגונים בישראל, את רמת המוכנות, האימוץ, ההשקעות, החסמים והתוכניות קדימה.
               </p>
+              <details className="mb-7 border-y border-[#E5E5E5] py-4 text-sm text-[#4B5563]">
+                <summary className="cursor-pointer font-semibold text-[#1A1A1A]">פתיח והסכמה להשתתפות</summary>
+                <p className="mt-3 max-h-44 overflow-y-auto leading-relaxed pe-2">{PARTICIPATION_NOTICE}</p>
+              </details>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-8 lg:mb-5 xl:mb-6">
                 <Link to={hasProgress ? `/q/${resumeIndex + 1}` : '/q/1'} className="btn-accent text-center text-base">
                   {hasProgress ? 'המשך מהמקום בו עצרת ←' : 'התחל סקר ←'}

@@ -9,7 +9,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useAnswers } from '../state/AnswersContext';
 import { computeScore, MATURITY_LEVELS } from '../lib/scoring';
-import { SUMMARY_EXPERTS } from '../data/levels';
+import { MATURITY_DISCLAIMER, SUMMARY_EXPERTS } from '../data/levels';
 import { renderInline } from '../lib/inline';
 import StatCard from '../components/StatCard';
 
@@ -112,6 +112,7 @@ export default function SummaryPage() {
           <section className="summary-section maturity-content" aria-labelledby="maturity-content-title">
             <div className="summary-section-head">
               <h2 id="maturity-content-title" className="summary-section-title">המשמעות עבור הארגון</h2>
+              <p className="summary-section-sub">{MATURITY_DISCLAIMER}</p>
             </div>
             <div className="maturity-content-list">
               <article className="maturity-content-block summary-glass-card">
@@ -123,7 +124,7 @@ export default function SummaryPage() {
                 <p>{renderInline(level.challenges)}</p>
               </article>
               <article className="maturity-content-block maturity-content-block--next summary-glass-card">
-                <h3>הצעד הבא</h3>
+                <h3>כיווני התקדמות אפשריים</h3>
                 <p>{renderInline(level.nextStep)}</p>
               </article>
             </div>

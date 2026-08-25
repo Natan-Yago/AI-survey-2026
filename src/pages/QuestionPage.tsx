@@ -122,12 +122,17 @@ export default function QuestionPage() {
       setAnswer(idx, optionIndex);
     } else if (q.type === 'multi') {
       const current = new Set((answer as MultiAnswer | undefined) ?? []);
+      const exclusiveOptions = new Set(q.exclusiveOptions ?? []);
       if (current.has(optionIndex)) {
         current.delete(optionIndex);
+      } else if (exclusiveOptions.has(optionIndex)) {
+        current.clear();
+        current.add(optionIndex);
       } else if (q.maxSelections && current.size >= q.maxSelections) {
         setNote(`ניתן לבחור עד ${q.maxSelections} אפשרויות.`);
         return;
       } else {
+        exclusiveOptions.forEach((exclusiveOption) => current.delete(exclusiveOption));
         current.add(optionIndex);
       }
       setNote('');
