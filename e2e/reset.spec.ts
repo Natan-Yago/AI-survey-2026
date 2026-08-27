@@ -16,7 +16,7 @@ test.describe('Reset survey', () => {
     await page.getByRole('button', { name: '→ התחל סקר חדש' }).click();
 
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.getByRole('link', { name: 'התחל סקר ←' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'התחל סקר ←' })).toBeDisabled();
 
     const stored = await page.evaluate(() => localStorage.getItem('ai-survey-answers-v3'));
     expect(stored === null || JSON.parse(stored).answers).toEqual({});

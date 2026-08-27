@@ -22,16 +22,21 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
   it('Welcome page shows the start CTA and navigates to Q1', async () => {
     const user = userEvent.setup();
     renderApp(['/']);
-    expect(screen.getByText('פתיח והסכמה להשתתפות')).toBeInTheDocument();
-    const startLink = screen.getByRole('link', { name: 'התחל סקר ←' });
-    await user.click(startLink);
+    expect(screen.getByText('מידע על הסקר')).toBeInTheDocument();
+    const consentCheckbox = screen.getByRole('checkbox', { name: /מדיניות הפרטיות של Deloitte/ });
+    const startButton = screen.getByRole('button', { name: 'התחל סקר ←' });
+    expect(startButton).toBeDisabled();
+
+    await user.click(consentCheckbox);
+    expect(startButton).toBeEnabled();
+    await user.click(startButton);
     const heading = await screen.findByRole('heading', { level: 1 });
     expect(heading).toHaveTextContent(surveyQuestions[0].question);
   });
 
   it('does not show a resume button when there is no saved progress', () => {
     renderApp(['/']);
-    expect(screen.queryByRole('link', { name: /המשך מהמקום/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /המשך מהמקום/ })).not.toBeInTheDocument();
   });
 
   it('shows a resume button on Welcome when progress already exists', () => {
@@ -40,7 +45,41 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
       JSON.stringify({ answers: { q1: 0 }, lastQuestionIndex: 1 }),
     );
     renderApp(['/']);
-    expect(screen.getByRole('link', { name: /המשך מהמקום/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /המשך מהמקום/ })).toBeDisabled();
+  });
+
+  it('resumes at the furthest answered question when the saved bookmark is stale', async () => {
+    const user = userEvent.setup();
+    localStorage.setItem(
+      'ai-survey-answers-v3',
+      JSON.stringify({
+        answers: { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0 },
+        lastQuestionIndex: 0,
+      }),
+    );
+    renderApp(['/']);
+
+    await user.click(screen.getByRole('checkbox', { name: /מדיניות הפרטיות של Deloitte/ }));
+    await user.click(screen.getByRole('button', { name: /המשך מהמקום/ }));
+
+    const heading = await screen.findByRole('heading', { level: 1 });
+    expect(heading).toHaveTextContent(surveyQuestions[4].question);
+  });
+
+  it('starting again clears previous answers before opening Q1', async () => {
+    const user = userEvent.setup();
+    localStorage.setItem(
+      'ai-survey-answers-v3',
+      JSON.stringify({ answers: { q1: 0, q2: 1 }, lastQuestionIndex: 1 }),
+    );
+    renderApp(['/']);
+
+    await user.click(screen.getByRole('checkbox', { name: /מדיניות הפרטיות של Deloitte/ }));
+    await user.click(screen.getByRole('button', { name: 'התחל מחדש ←' }));
+
+    const heading = await screen.findByRole('heading', { level: 1 });
+    expect(heading).toHaveTextContent(surveyQuestions[0].question);
+    expect(screen.getAllByRole('radio')[0]).toHaveAttribute('aria-checked', 'false');
   });
 
   it('answering Q1 enables Next, and the selection is retained after navigating back', async () => {
@@ -70,7 +109,7 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     const user = userEvent.setup();
     renderApp(['/q/1']);
     await user.click(screen.getByRole('button', { name: '→ לפתיחה' }));
-    expect(await screen.findByRole('link', { name: 'התחל סקר ←' })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: 'התחל סקר ←' })).toBeDisabled();
   });
 
   it('Q18 allows independent matrix selections and limits each column to 3', async () => {

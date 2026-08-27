@@ -1,16 +1,33 @@
-import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useAnswers } from '../state/AnswersContext';
 import { TOTAL_QUESTIONS } from '../data/questions';
 
 const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 
-const PARTICIPATION_NOTICE = 'תודה על השתתפותך בסקר. מטרת הסקר היא לאסוף תובנות מצטברות לגבי רמת האימוץ, הבשלות, האתגרים והעדיפויות של ארגונים ביחס לשימוש בבינה מלאכותית (AI), לרבות Generative AI ו-Agentic AI. הסקר מיועד לאיסוף מידע כללי ומצטבר. אין צורך למסור את שמך או את שם הארגון. התשובות ינותחו ויוצגו, ככל שיוצגו, באופן מצטבר ולא באופן שנועד לזהות משיב מסוים או ארגון מסוים. ההשתתפות בסקר היא וולונטרית. ניתן לבחור באפשרות "לא יודע/ת / לא ניתן למסור" או "לא יודע/ת / לא בטוח/ה", לפי העניין, כאשר אין בידך מידע מספיק או כאשר אינך רשאי/ת למסור מידע מסוים. המידע שייאסף עשוי לשמש את Deloitte ישראל לצרכים פנימיים, לניתוחים סטטיסטיים, להפקת תובנות מקצועיות, לפיתוח ידע ולפרסומים מקצועיים או שיווקיים המבוססים על נתונים מצטברים. הנתונים לא יוצגו באופן שנועד לזהות אותך או את הארגון שאליו את/ה משתייך/ת. בהשלמת הסקר, את/ה מאשר/ת כי קראת את האמור, מסכים/ה להשתתף בסקר ומסכים/ה לשימוש בתשובותיך למטרות המפורטות לעיל, בכפוף לכך שהמידע יוצג באופן מצטבר. הסקר ותוצאותיו אינם מהווים ייעוץ מקצועי, תחזית מחייבת, דירוג או הערכה פרטנית של ארגון כלשהו, ואינם תחליף לייעוץ המותאם לנסיבותיו של ארגון מסוים.';
+const SURVEY_NOTICE = 'תודה על השתתפותך בסקר. מטרת הסקר היא לאסוף תובנות מצטברות לגבי רמת האימוץ, הבשלות, האתגרים והעדיפויות של ארגונים ביחס לשימוש בבינה מלאכותית (AI), לרבות Generative AI ו-Agentic AI. הסקר מיועד לאיסוף מידע כללי ומצטבר. אין צורך למסור את שמך או את שם הארגון. התשובות ינותחו ויוצגו, ככל שיוצגו, באופן מצטבר ולא באופן שנועד לזהות משיב מסוים או ארגון מסוים. ההשתתפות בסקר היא וולונטרית. ניתן לבחור באפשרות "לא יודע/ת / לא ניתן למסור" או "לא יודע/ת / לא בטוח/ה", לפי העניין, כאשר אין בידך מידע מספיק או כאשר אינך רשאי/ת למסור מידע מסוים. המידע שייאסף עשוי לשמש את Deloitte ישראל לצרכים פנימיים, לניתוחים סטטיסטיים, להפקת תובנות מקצועיות, לפיתוח ידע ולפרסומים מקצועיים או שיווקיים המבוססים על נתונים מצטברים. הנתונים לא יוצגו באופן שנועד לזהות אותך או את הארגון שאליו את/ה משתייך/ת. הסקר ותוצאותיו אינם מהווים ייעוץ מקצועי, תחזית מחייבת, דירוג או הערכה פרטנית של ארגון כלשהו, ואינם תחליף לייעוץ המותאם לנסיבותיו של ארגון מסוים.';
+
+const PRIVACY_POLICY_URL = 'https://www.deloitte.com/il/en/legal/privacy.html';
 
 export default function WelcomePage() {
-  const { lastQuestionIndex, answers } = useAnswers();
+  const navigate = useNavigate();
+  const { lastQuestionIndex, answers, resetSurvey } = useAnswers();
+  const [hasConsent, setHasConsent] = useState(false);
   const hasProgress = Object.keys(answers).length > 0;
-  const resumeIndex = Math.max(0, Math.min(lastQuestionIndex, TOTAL_QUESTIONS - 1));
+  const furthestAnsweredIndex = Object.keys(answers).reduce((furthestIndex, key) => {
+    const match = /^q(\d+)$/.exec(key);
+    if (!match) return furthestIndex;
+    return Math.max(furthestIndex, Number(match[1]) - 1);
+  }, 0);
+  const resumeIndex = Math.max(
+    0,
+    Math.min(Math.max(lastQuestionIndex, furthestAnsweredIndex), TOTAL_QUESTIONS - 1),
+  );
+
+  const handleRestart = () => {
+    resetSurvey();
+    navigate('/q/1');
+  };
 
   useEffect(() => {
     document.title = 'סקר בשלות AI · ברוכים הבאים';
@@ -44,16 +61,48 @@ export default function WelcomePage() {
               <p className="text-base lg:text-sm xl:text-base text-[#6B7280] leading-relaxed mb-10 lg:mb-5 xl:mb-7">
                 סקר זה נועד לבחון את מצב ה-<span className="font-latin">AI</span> בארגונים בישראל, את רמת המוכנות, האימוץ, ההשקעות, החסמים והתוכניות קדימה.
               </p>
-              <details className="mb-7 border-y border-[#E5E5E5] py-4 text-sm text-[#4B5563]">
-                <summary className="cursor-pointer font-semibold text-[#1A1A1A]">פתיח והסכמה להשתתפות</summary>
-                <p className="mt-3 max-h-44 overflow-y-auto leading-relaxed pe-2">{PARTICIPATION_NOTICE}</p>
+              <details className="mb-5 border-y border-[#E5E5E5] py-4 text-sm text-[#4B5563]">
+                <summary className="cursor-pointer font-semibold text-[#1A1A1A]">מידע על הסקר</summary>
+                <p className="mt-3 max-h-44 overflow-y-auto leading-relaxed pe-2">{SURVEY_NOTICE}</p>
               </details>
+              <label className="mb-7 flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-[#4B5563]">
+                <input
+                  type="checkbox"
+                  checked={hasConsent}
+                  onChange={(event) => setHasConsent(event.target.checked)}
+                  className="mt-1 h-4 w-4 shrink-0 accent-[#86BC25]"
+                />
+                <span>
+                  אני מאשר/ת שקראתי את{' '}
+                  <a
+                    href={PRIVACY_POLICY_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-[#1A1A1A] underline hover:text-[#567A16]"
+                  >
+                    מדיניות הפרטיות של Deloitte
+                  </a>
+                  , ואני מסכים/ה להשתתף בסקר ולעיבוד תשובותיי בהתאם למפורט לעיל.
+                </span>
+              </label>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-8 lg:mb-5 xl:mb-6">
-                <Link to={hasProgress ? `/q/${resumeIndex + 1}` : '/q/1'} className="btn-accent text-center text-base">
+                <button
+                  type="button"
+                  disabled={!hasConsent}
+                  onClick={() => navigate(hasProgress ? `/q/${resumeIndex + 1}` : '/q/1')}
+                  className="btn-accent text-center text-base disabled:cursor-not-allowed disabled:opacity-45"
+                >
                   {hasProgress ? 'המשך מהמקום בו עצרת ←' : 'התחל סקר ←'}
-                </Link>
+                </button>
                 {hasProgress && (
-                  <Link to="/q/1" className="btn-ghost text-center text-base">התחל מחדש ←</Link>
+                  <button
+                    type="button"
+                    disabled={!hasConsent}
+                    onClick={handleRestart}
+                    className="btn-ghost text-center text-base disabled:cursor-not-allowed disabled:opacity-45"
+                  >
+                    התחל מחדש ←
+                  </button>
                 )}
               </div>
               <nav className="text-sm lg:text-xs xl:text-sm text-[#6B7280] leading-relaxed border-t border-[#E5E5E5] pt-6 lg:pt-4 xl:pt-5 flex flex-wrap gap-x-6 gap-y-2">
@@ -63,7 +112,7 @@ export default function WelcomePage() {
                 <a href="https://www.deloitte.com/il/en/legal/Cookies.html" target="_blank" rel="noopener noreferrer" className="hover:text-[#1A1A1A] hover:underline">
                   עוגיות
                 </a>
-                <a href="https://www.deloitte.com/il/en/legal/privacy.html" target="_blank" rel="noopener noreferrer" className="hover:text-[#1A1A1A] hover:underline">
+                <a href={PRIVACY_POLICY_URL} target="_blank" rel="noopener noreferrer" className="hover:text-[#1A1A1A] hover:underline">
                   פרטיות
                 </a>
               </nav>

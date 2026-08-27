@@ -8,6 +8,10 @@ async function clearStorage(page: Page) {
   });
 }
 
+async function acceptPrivacyConsent(page: Page) {
+  await page.getByRole('checkbox', { name: /מדיניות הפרטיות של Deloitte/ }).check();
+}
+
 /**
  * Answers the currently rendered question in a layout-agnostic way by
  * clicking the first available option in each question type's DOM shape:
@@ -58,7 +62,8 @@ test.describe('Full survey journey', () => {
   test('Welcome → answering all 35 questions → Summary shows a maturity level and score', async ({ page }) => {
     await clearStorage(page);
 
-    await page.getByRole('link', { name: 'התחל סקר ←' }).click();
+    await acceptPrivacyConsent(page);
+    await page.getByRole('button', { name: 'התחל סקר ←' }).click();
     await expect(page).toHaveURL(/#\/q\/1$/);
 
     for (let i = 0; i < 35; i++) {
@@ -75,7 +80,8 @@ test.describe('Full survey journey', () => {
 
   test('Previous/Next navigation preserves the selected answer', async ({ page }) => {
     await clearStorage(page);
-    await page.getByRole('link', { name: 'התחל סקר ←' }).click();
+    await acceptPrivacyConsent(page);
+    await page.getByRole('button', { name: 'התחל סקר ←' }).click();
 
     const firstOption = page.locator('div.space-y-3[role] button[role]').first();
     await firstOption.click();
@@ -94,7 +100,8 @@ test.describe('Full survey journey', () => {
 
   test('Next is disabled until the question is answered', async ({ page }) => {
     await clearStorage(page);
-    await page.getByRole('link', { name: 'התחל סקר ←' }).click();
+    await acceptPrivacyConsent(page);
+    await page.getByRole('button', { name: 'התחל סקר ←' }).click();
     await expect(page.getByRole('button', { name: 'הבא ←' })).toBeDisabled();
   });
 });
