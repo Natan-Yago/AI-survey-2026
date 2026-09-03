@@ -23,8 +23,9 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     const user = userEvent.setup();
     renderApp(['/']);
     expect(screen.getByText('מידע על הסקר')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'מדד בשלות ואימוץ AI בארגונים' })).toBeInTheDocument();
     const consentCheckbox = screen.getByRole('checkbox', { name: /מדיניות הפרטיות של Deloitte/ });
-    const startButton = screen.getByRole('button', { name: 'התחל סקר ←' });
+    const startButton = screen.getByRole('button', { name: 'למענה ←' });
     expect(startButton).toBeDisabled();
 
     await user.click(consentCheckbox);
@@ -109,7 +110,7 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     const user = userEvent.setup();
     renderApp(['/q/1']);
     await user.click(screen.getByRole('button', { name: '→ לפתיחה' }));
-    expect(await screen.findByRole('button', { name: 'התחל סקר ←' })).toBeDisabled();
+    expect(await screen.findByRole('button', { name: 'למענה ←' })).toBeDisabled();
   });
 
   it('Q18 allows independent matrix selections and limits each column to 3', async () => {
@@ -156,9 +157,9 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     const expected = computeScore(answers);
     renderApp(['/summary']);
 
-    expect(screen.getByRole('heading', { level: 1, name: 'AI in Action' })).toBeInTheDocument();
+    expect(screen.queryByText('AI in Action')).not.toBeInTheDocument();
     expect(screen.getByText(`על סמך הנתונים שמילאת הארגון שלך נמצא בשלב ${expected.level.id}`)).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 2, name: `Level ${expected.level.id} - ${expected.level.nameEn}` })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: `Level ${expected.level.id} - ${expected.level.nameEn}` })).toBeInTheDocument();
     expect(screen.getByText(expected.average.toFixed(2))).toBeInTheDocument();
     expect(screen.getByText(`${expected.count} answers scored`)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: "בנצ'מרק עולמי · Deloitte 2026" })).toBeInTheDocument();

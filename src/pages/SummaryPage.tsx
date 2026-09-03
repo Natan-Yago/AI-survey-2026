@@ -65,15 +65,14 @@ export default function SummaryPage() {
             </div>
 
             <header className="summary-profile-intro">
-              <h1 className="summary-profile-title font-latin">AI in Action</h1>
               <p className="summary-profile-description">
                 על סמך הנתונים שמילאת הארגון שלך נמצא בשלב {level.id}
               </p>
             </header>
 
-            <h2 className="summary-level-title">
+            <h1 className="summary-level-title">
               <span className="font-latin">Level {level.id} - {level.nameEn}</span>
-            </h2>
+            </h1>
             <div className="score-figure">
               <span className="score-num font-latin">{count > 0 ? average.toFixed(2) : '-'}</span>
               <span className="score-denom font-latin">/ 5.00</span>

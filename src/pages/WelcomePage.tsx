@@ -42,24 +42,19 @@ export default function WelcomePage() {
   }, []);
 
   return (
-    <>
-      <Link to="/" className="welcome-mobile-logo fixed top-5 left-5 z-20 inline-flex lg:hidden" aria-label="Deloitte">
-        <img src={assetUrl('Deloitte-Master-Logo-Black-RGB.png')} alt="Deloitte" className="h-12 sm:h-14 w-auto" />
-      </Link>
-      <Link to="/" className="welcome-desktop-logo fixed top-6 left-6 z-20 hidden lg:inline-flex" aria-label="Deloitte">
-        <img src={assetUrl('Deloitte-Master-Logo-Black-RGB.png')} alt="Deloitte" className="h-14 xl:h-16 w-auto" />
-      </Link>
-      <div className="welcome-layout min-h-screen w-full grid grid-cols-1" dir="ltr">
-        <aside className="welcome-image-col relative hidden lg:flex bg-[#74E796] overflow-hidden items-center justify-center" dir="rtl">
-          <img src={assetUrl('new-hero-image.jpg')} alt="" className="w-full h-full object-cover" />
-        </aside>
+    <div className="welcome-layout min-h-screen w-full grid grid-cols-1" dir="ltr">
+      <aside className="welcome-image-col relative hidden lg:flex bg-[#74E796] overflow-hidden items-center justify-center" dir="rtl">
+        <img src={assetUrl('welcome-img-new.jpg')} alt="" className="w-full h-full object-cover" />
+      </aside>
 
-        <section className="welcome-content-col flex flex-col min-h-screen" dir="rtl">
+      <section className="welcome-content-col relative flex flex-col min-h-screen" dir="rtl">
+        <Link to="/" className="absolute top-5 left-5 sm:top-6 sm:left-6 z-20 inline-flex" aria-label="Deloitte">
+          <img src={assetUrl('Deloitte-Master-Logo-Black-RGB.png')} alt="Deloitte" className="h-12 sm:h-14 xl:h-16 w-auto" />
+        </Link>
           <main className="welcome-main flex-1 px-6 sm:px-10 lg:px-10 xl:px-14 pt-16 pb-12 sm:pt-20 sm:pb-16 lg:py-6 flex items-center justify-center">
             <div className="welcome-copy w-full max-w-xl">
-              <img src={assetUrl('text comp.png')} alt="" aria-hidden="true" className="h-16 sm:h-16 lg:h-16 xl:h-20 w-auto mb-5 lg:mb-3 xl:mb-4" />
               <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-5 lg:mb-3 xl:mb-4">
-                סקר בשלות ואימוץ <span className="font-latin">AI</span> בארגונים
+                מדד בשלות ואימוץ <span className="font-latin">AI</span> בארגונים
               </h1>
               <p className="text-lg lg:text-base xl:text-lg text-[#1A1A1A]/80 leading-relaxed mb-5 lg:mb-3 xl:mb-4">
                 בעידן שבו בינה מלאכותית משנה במהירות את הדרך שבה ארגונים פועלים, מתחרים ומייצרים ערך, היכולת לאמץ, להטמיע ולהרחיב שימוש ביכולות <span className="font-latin">AI</span> הופכת לגורם אסטרטגי מרכזי.
@@ -102,7 +97,7 @@ export default function WelcomePage() {
                   onClick={() => navigate(hasProgress ? `/q/${resumeIndex + 1}` : '/q/1')}
                   className="btn-accent text-center text-base disabled:cursor-not-allowed disabled:opacity-45"
                 >
-                  {hasProgress ? 'המשך מהמקום בו עצרת ←' : 'התחל סקר ←'}
+                  {hasProgress ? 'המשך מהמקום בו עצרת ←' : 'למענה ←'}
                 </button>
                 {hasProgress && (
                   <button
@@ -128,8 +123,7 @@ export default function WelcomePage() {
               </nav>
             </div>
           </main>
-        </section>
-      </div>
-    </>
+      </section>
+    </div>
   );
 }

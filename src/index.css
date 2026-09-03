@@ -116,12 +116,6 @@ body {
   .welcome-body .welcome-main { padding-top: 8rem; }
 }
 
-/* Swap logos when the hero image is hidden on wide-but-short landscape screens. */
-@media (min-width: 1024px) and (max-aspect-ratio: 5/4) {
-  .welcome-mobile-logo { display: inline-flex; }
-  .welcome-desktop-logo { display: none; }
-}
-
 /* ----- Survey body ----- */
 .survey-demo-body {
   position: relative; isolation: isolate; background: #f5f7ef;
