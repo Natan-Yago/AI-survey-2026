@@ -53,7 +53,7 @@ export default function WelcomePage() {
         </Link>
           <main className="welcome-main flex-1 px-6 sm:px-10 lg:px-10 xl:px-14 pt-16 pb-12 sm:pt-20 sm:pb-16 lg:py-6 flex items-center justify-center">
             <div className="welcome-copy w-full max-w-xl">
-              <p dir="ltr" className="mb-3 text-right text-xs font-semibold text-[#567A16]">
+              <p dir="ltr" className="mb-3 text-right text-sm font-semibold text-[#567A16]">
                 AI Transformation Readiness Index
               </p>
               <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-5 lg:mb-3 xl:mb-4">
