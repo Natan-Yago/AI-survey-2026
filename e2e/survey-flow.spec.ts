@@ -59,14 +59,14 @@ async function goToNextQuestion(page: Page) {
 }
 
 test.describe('Full survey journey', () => {
-  test('Welcome → answering all 35 questions → Summary shows a maturity level and score', async ({ page }) => {
+  test('Welcome → answering all 34 questions → Summary shows a maturity level and score', async ({ page }) => {
     await clearStorage(page);
 
     await acceptPrivacyConsent(page);
-    await page.getByRole('button', { name: 'התחל סקר ←' }).click();
+    await page.getByRole('button', { name: 'למענה ←' }).click();
     await expect(page).toHaveURL(/#\/q\/1$/);
 
-    for (let i = 0; i < 35; i++) {
+    for (let i = 0; i < 34; i++) {
       await answerCurrentQuestion(page);
       await goToNextQuestion(page);
     }
@@ -81,7 +81,7 @@ test.describe('Full survey journey', () => {
   test('Previous/Next navigation preserves the selected answer', async ({ page }) => {
     await clearStorage(page);
     await acceptPrivacyConsent(page);
-    await page.getByRole('button', { name: 'התחל סקר ←' }).click();
+    await page.getByRole('button', { name: 'למענה ←' }).click();
 
     const firstOption = page.locator('div.space-y-3[role] button[role]').first();
     await firstOption.click();
@@ -101,7 +101,7 @@ test.describe('Full survey journey', () => {
   test('Next is disabled until the question is answered', async ({ page }) => {
     await clearStorage(page);
     await acceptPrivacyConsent(page);
-    await page.getByRole('button', { name: 'התחל סקר ←' }).click();
+    await page.getByRole('button', { name: 'למענה ←' }).click();
     await expect(page.getByRole('button', { name: 'הבא ←' })).toBeDisabled();
   });
 });

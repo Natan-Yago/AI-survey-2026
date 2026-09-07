@@ -17,11 +17,15 @@ import FactModal from '../components/FactModal';
 import { FACT_BY_QUESTION_INDEX } from '../data/facts';
 
 const assetUrl = (path: string) => `${import.meta.env.BASE_URL}${path}`;
-const MATRIX_TABLE_QUESTION_INDEXES = new Set([7, 9, 13, 14, 17, 19, 34]);
+const MATRIX_TABLE_QUESTION_INDEXES = new Set([6, 8, 12, 13, 16, 18, 33]);
 
 function clampIndex(n: number): number {
   if (Number.isNaN(n)) return 0;
   return Math.min(Math.max(n, 0), TOTAL_QUESTIONS - 1);
+}
+
+function isMatrixAnswer(value: unknown): value is MatrixSingleAnswer {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 export default function QuestionPage() {
@@ -121,7 +125,7 @@ export default function QuestionPage() {
       setNote('');
       setAnswer(idx, optionIndex);
     } else if (q.type === 'multi') {
-      const current = new Set((answer as MultiAnswer | undefined) ?? []);
+      const current = new Set(Array.isArray(answer) ? answer as MultiAnswer : []);
       const exclusiveOptions = new Set(q.exclusiveOptions ?? []);
       if (current.has(optionIndex)) {
         current.delete(optionIndex);
@@ -141,7 +145,7 @@ export default function QuestionPage() {
   }
 
   function handleMatrixSingle(promptIndex: number, choiceIndex: number) {
-    const current = (answer as MatrixSingleAnswer | undefined) ?? {};
+    const current = isMatrixAnswer(answer) ? answer : {};
     setNote('');
     setAnswer(idx, { ...current, [promptIndex]: choiceIndex });
   }
@@ -149,10 +153,17 @@ export default function QuestionPage() {
   function handleMatrixMulti(q: Question, rowIndex: number, columnIndex: number) {
     if (q.type !== 'matrix-multi') return;
     const optionKey = `${rowIndex}:${columnIndex}`;
-    const current = new Set((answer as MatrixMultiAnswer | undefined) ?? []);
+    const current = new Set(Array.isArray(answer) ? answer as MatrixMultiAnswer : []);
+    const exclusiveRows = new Set(q.exclusiveRows ?? []);
     if (current.has(optionKey)) {
       current.delete(optionKey);
+    } else if (exclusiveRows.has(rowIndex)) {
+      Array.from(current).forEach((key) => {
+        if (key.endsWith(`:${columnIndex}`)) current.delete(key);
+      });
+      current.add(optionKey);
     } else {
+      exclusiveRows.forEach((exclusiveRow) => current.delete(`${exclusiveRow}:${columnIndex}`));
       const max = q.maxPerColumn;
       if (max !== undefined) {
         let countInColumn = 0;
@@ -171,7 +182,8 @@ export default function QuestionPage() {
   function handleMatrixTableMulti(q: Question, rowIndex: number, columnIndex: number) {
     if (q.type !== 'matrix-multi') return;
     const optionKey = `${rowIndex}:${columnIndex}`;
-    const current = new Set((answer as MatrixMultiAnswer | undefined) ?? []);
+    const current = new Set(Array.isArray(answer) ? answer as MatrixMultiAnswer : []);
+    const exclusiveRows = new Set(q.exclusiveRows ?? []);
 
     if (current.has(optionKey)) {
       current.delete(optionKey);
@@ -179,6 +191,18 @@ export default function QuestionPage() {
       setAnswer(idx, Array.from(current).sort());
       return;
     }
+
+    if (exclusiveRows.has(rowIndex)) {
+      Array.from(current).forEach((key) => {
+        if (key.endsWith(`:${columnIndex}`)) current.delete(key);
+      });
+      current.add(optionKey);
+      setNote('');
+      setAnswer(idx, Array.from(current).sort());
+      return;
+    }
+
+    exclusiveRows.forEach((exclusiveRow) => current.delete(`${exclusiveRow}:${columnIndex}`));
 
     const max = q.maxPerColumn;
     if (max !== undefined) {
@@ -200,7 +224,7 @@ export default function QuestionPage() {
       const selected = new Set<number>(
         question.type === 'single'
           ? typeof answer === 'number' ? [answer as SingleAnswer] : []
-          : ((answer as MultiAnswer | undefined) ?? []),
+          : (Array.isArray(answer) ? answer as MultiAnswer : []),
       );
       return (
         <div
@@ -224,16 +248,16 @@ export default function QuestionPage() {
 
     if (question.type === 'matrix-single' || question.type === 'matrix-column-single') {
       const orientation: 'row' | 'column' = question.type === 'matrix-single' ? 'row' : 'column';
-      const saved = (answer as MatrixSingleAnswer | undefined) ?? {};
+      const saved = isMatrixAnswer(answer) ? answer : {};
       const prompts = orientation === 'row' ? question.rows : question.columns;
       const choices = orientation === 'row' ? question.columns : question.rows;
       const promptLabel = orientation === 'row' ? 'שורה' : 'טווח זמן';
 
       if (usesMatrixTable) {
-        // Q10 (survey index 9 — "רמת אימוץ AI לפי פונקציה") keeps its
+        // Q9 (survey index 8 — "רמת אימוץ AI לפי פונקציה") keeps its
         // per-row card list on mobile; every other radio matrix uses the
         // native <select> per row for a shorter tap path.
-        const mobileVariant: 'dropdown' | 'cards' = idx === 9 ? 'cards' : 'dropdown';
+        const mobileVariant: 'dropdown' | 'cards' = idx === 8 ? 'cards' : 'dropdown';
         return (
           <MatrixTable
             rows={prompts}
@@ -298,7 +322,7 @@ export default function QuestionPage() {
     }
 
     // matrix-multi
-    const saved = new Set((answer as MatrixMultiAnswer | undefined) ?? []);
+    const saved = new Set(Array.isArray(answer) ? answer as MatrixMultiAnswer : []);
     if (usesMatrixTable) {
       return (
         <MatrixTable

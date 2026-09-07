@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'ai-survey-answers-v3';
+const STORAGE_KEY = 'ai-survey-answers-v4';
 
 export interface PersistedState {
   answers: Record<string, unknown>;

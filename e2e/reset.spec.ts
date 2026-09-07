@@ -5,8 +5,8 @@ test.describe('Reset survey', () => {
     await page.goto('/');
     await page.evaluate(() => {
       localStorage.setItem(
-        'ai-survey-answers-v3',
-        JSON.stringify({ answers: { q17: 4, q19: 4 }, lastQuestionIndex: 34 }),
+        'ai-survey-answers-v4',
+        JSON.stringify({ answers: { q16: 4, q18: 4 }, lastQuestionIndex: 33 }),
       );
     });
     await page.goto('/#/summary');
@@ -16,9 +16,9 @@ test.describe('Reset survey', () => {
     await page.getByRole('button', { name: '→ התחל סקר חדש' }).click();
 
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.getByRole('button', { name: 'התחל סקר ←' })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'למענה ←' })).toBeDisabled();
 
-    const stored = await page.evaluate(() => localStorage.getItem('ai-survey-answers-v3'));
+    const stored = await page.evaluate(() => localStorage.getItem('ai-survey-answers-v4'));
     expect(stored === null || JSON.parse(stored).answers).toEqual({});
   });
 });

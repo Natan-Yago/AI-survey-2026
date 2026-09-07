@@ -7,8 +7,8 @@ const isNum = (v: unknown): v is number => typeof v === 'number';
 
 export const FACTS: Fact[] = [
   {
-    questionIndex: 13,
-    summaryQuestionIndex: 8,
+    questionIndex: 12,
+    summaryQuestionIndex: 7,
     title: 'השקעות AI',
     emoji: '📈',
     text: 'על פי הסקר העולמי של Deloitte לשנת 2026, תקציבי תשתיות AI צפויים לגדול פי 3.2 עד 2028, ובחברות גדולות אפילו פי 3.9.',
@@ -20,8 +20,8 @@ export const FACTS: Fact[] = [
     shouldShow: (a) => isNum(a) && (a as SingleAnswer) <= 2,
   },
   {
-    questionIndex: 9,
-    summaryQuestionIndex: 11,
+    questionIndex: 8,
+    summaryQuestionIndex: 10,
     title: 'שימוש בפועל ב־AI',
     emoji: '⚡',
     text: 'בעולם, כיום רוב הארגונים צורכים בין 1B ל־10B טוקנים בחודש, אך עד 2028 רובם צפויים לעבור את רף ה־10B.',
@@ -31,8 +31,8 @@ export const FACTS: Fact[] = [
     shouldShow: (a) => isNum(a) && (a as SingleAnswer) <= 1,
   },
   {
-    questionIndex: 11,
-    summaryQuestionIndex: 12,
+    questionIndex: 10,
+    summaryQuestionIndex: 11,
     title: 'מעבר מניסויים לפרודקשן',
     emoji: '🚀',
     text: 'בסקר הגלובלי של Deloitte, רק 25% מהארגונים בעולם העבירו מעל 40% מניסויי ה־AI לפרודקשן, אך 54% מצפים להגיע לכך בתוך חצי שנה.',
@@ -49,8 +49,8 @@ export const FACTS: Fact[] = [
     },
   },
   {
-    questionIndex: 16,
-    summaryQuestionIndex: 17,
+    questionIndex: 15,
+    summaryQuestionIndex: 16,
     title: 'תועלות מ־AI',
     emoji: '💰',
     text: 'בעולם, 74% מהארגונים מקווים להגדיל הכנסות באמצעות AI, אך רק 20% עושים זאת כיום בפועל.',
@@ -66,8 +66,8 @@ export const FACTS: Fact[] = [
     },
   },
   {
-    questionIndex: 17,
-    summaryQuestionIndex: 18,
+    questionIndex: 16,
+    summaryQuestionIndex: 17,
     title: 'טרנספורמציית תהליכים',
     emoji: '🔄',
     text: 'על פי הסקר העולמי של Deloitte, רק כשליש מהארגונים בעולם משתמשים ב־AI לטרנספורמציה עמוקה של מוצרים, תהליכים ומודלים עסקיים.',
@@ -79,8 +79,8 @@ export const FACTS: Fact[] = [
     shouldShow: (a) => isNum(a) && (a as SingleAnswer) <= 1,
   },
   {
-    questionIndex: 21,
-    summaryQuestionIndex: 22,
+    questionIndex: 20,
+    summaryQuestionIndex: 21,
     title: 'עיצוב מחדש של תפקידים',
     emoji: '👥',
     text: 'בעולם, 84% מהארגונים עדיין לא עיצבו מחדש תפקידים סביב יכולות AI.',
@@ -92,8 +92,8 @@ export const FACTS: Fact[] = [
     shouldShow: (a) => isNum(a) && (a as SingleAnswer) <= 1,
   },
   {
-    questionIndex: 23,
-    summaryQuestionIndex: 24,
+    questionIndex: 22,
+    summaryQuestionIndex: 23,
     title: 'אוטומציה של משרות',
     emoji: '🤖',
     text: 'על פי הסקר העולמי של Deloitte לשנת 2026, יותר משליש מהארגונים בעולם מצפים שלפחות 10% מהמשרות יעברו אוטומציה מלאה כבר בתוך שנה.',
@@ -108,8 +108,8 @@ export const FACTS: Fact[] = [
     },
   },
   {
-    questionIndex: 27,
-    summaryQuestionIndex: 28,
+    questionIndex: 26,
+    summaryQuestionIndex: 27,
     title: 'עובדים לא טכנולוגיים',
     emoji: '💡',
     text: 'בסקר הגלובלי של Deloitte, 55% מהעובדים הלא טכנולוגיים פתוחים להתנסות ב־AI, אבל רק 13% מחפשים אותו באופן יזום.',
@@ -121,8 +121,8 @@ export const FACTS: Fact[] = [
     shouldShow: (a) => isNum(a) && (a as SingleAnswer) <= 2,
   },
   {
-    questionIndex: 31,
-    summaryQuestionIndex: 32,
+    questionIndex: 30,
+    summaryQuestionIndex: 31,
     title: 'שימוש ב־Agentic AI',
     emoji: '🧠',
     text: 'על פי הסקר העולמי של Deloitte לשנת 2026, השימוש המשמעותי ב־Agentic AI צפוי לגדול מ־23% כיום ל־74% בתוך שנתיים.',
@@ -138,8 +138,8 @@ export const FACTS: Fact[] = [
     },
   },
   {
-    questionIndex: 32,
-    summaryQuestionIndex: 32,
+    questionIndex: 31,
+    summaryQuestionIndex: 31,
     title: 'ממשל לסוכני AI',
     emoji: '🛡️',
     text: 'רק 21% מהארגונים מדווחים שיש להם מודל governance בוגר לסוכני AI אוטונומיים.',

@@ -42,7 +42,7 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
 
   it('shows a resume button on Welcome when progress already exists', () => {
     localStorage.setItem(
-      'ai-survey-answers-v3',
+      'ai-survey-answers-v4',
       JSON.stringify({ answers: { q1: 0 }, lastQuestionIndex: 1 }),
     );
     renderApp(['/']);
@@ -52,7 +52,7 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
   it('resumes at the furthest answered question when the saved bookmark is stale', async () => {
     const user = userEvent.setup();
     localStorage.setItem(
-      'ai-survey-answers-v3',
+      'ai-survey-answers-v4',
       JSON.stringify({
         answers: { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0 },
         lastQuestionIndex: 0,
@@ -70,7 +70,7 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
   it('starting again clears previous answers before opening Q1', async () => {
     const user = userEvent.setup();
     localStorage.setItem(
-      'ai-survey-answers-v3',
+      'ai-survey-answers-v4',
       JSON.stringify({ answers: { q1: 0, q2: 1 }, lastQuestionIndex: 1 }),
     );
     renderApp(['/']);
@@ -113,9 +113,9 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     expect(await screen.findByRole('button', { name: 'למענה ←' })).toBeDisabled();
   });
 
-  it('Q18 allows independent matrix selections and limits each column to 3', async () => {
+  it('Q17 allows independent matrix selections and limits each column to 3', async () => {
     const user = userEvent.setup();
-    renderApp(['/q/18']);
+    renderApp(['/q/17']);
 
     const rows = document.querySelectorAll('.matrix-table-region tbody tr');
     const firstRowButtons = within(rows[0] as HTMLElement).getAllByRole('checkbox');
@@ -131,28 +131,60 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
 
     expect(fourthChoice).toHaveAttribute('aria-checked', 'false');
     expect(screen.getByText('ניתן לבחור עד 3 אפשרויות בכל עמודה.')).toBeInTheDocument();
+
+    const exclusiveChoice = within(rows[7] as HTMLElement).getAllByRole('checkbox')[0];
+    await user.click(exclusiveChoice);
+    expect(exclusiveChoice).toHaveAttribute('aria-checked', 'true');
+    expect(firstRowButtons[0]).toHaveAttribute('aria-checked', 'false');
+
+    await user.click(firstRowButtons[0]);
+    expect(firstRowButtons[0]).toHaveAttribute('aria-checked', 'true');
+    expect(exclusiveChoice).toHaveAttribute('aria-checked', 'false');
+
+    const futureExclusiveChoice = within(rows[7] as HTMLElement).getAllByRole('checkbox')[1];
+    await user.click(futureExclusiveChoice);
+    expect(futureExclusiveChoice).toHaveAttribute('aria-checked', 'true');
+    expect(firstRowButtons[1]).toHaveAttribute('aria-checked', 'false');
+
+    await user.click(firstRowButtons[1]);
+    expect(firstRowButtons[1]).toHaveAttribute('aria-checked', 'true');
+    expect(futureExclusiveChoice).toHaveAttribute('aria-checked', 'false');
   });
 
-  it('Q22 keeps no-concerns and unknown answers exclusive from specific risks', async () => {
+  it('Q17 ignores a stale answer with the wrong shape instead of crashing', () => {
+    localStorage.setItem(
+      'ai-survey-answers-v4',
+      JSON.stringify({ answers: { q17: 3 }, lastQuestionIndex: 16 }),
+    );
+
+    renderApp(['/q/17']);
+
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'בהתייחס לתועלות מיוזמות ה-AI בארגון',
+    );
+    expect(screen.getByRole('button', { name: 'הבא ←' })).toBeDisabled();
+  });
+
+  it('Q21 keeps no-concerns and unknown answers exclusive from specific risks', async () => {
     const user = userEvent.setup();
-    renderApp(['/q/22']);
+    renderApp(['/q/21']);
 
     const options = screen.getAllByRole('checkbox');
     await user.click(options[0]);
-    await user.click(options[7]);
+    await user.click(options[4]);
     expect(options[0]).toHaveAttribute('aria-checked', 'false');
-    expect(options[7]).toHaveAttribute('aria-checked', 'true');
+    expect(options[4]).toHaveAttribute('aria-checked', 'true');
 
     await user.click(options[1]);
-    expect(options[7]).toHaveAttribute('aria-checked', 'false');
+    expect(options[4]).toHaveAttribute('aria-checked', 'false');
     expect(options[1]).toHaveAttribute('aria-checked', 'true');
   });
 
   it('Summary page renders the maturity level matching computeScore() for the persisted answers', () => {
-    const answers: AnswersMap = { q17: 4, q19: 4, q23: 4, q29: 4, q30: 4, q33: 4 };
+    const answers: AnswersMap = { q16: 4, q18: 4, q22: 4, q28: 4, q29: 4, q32: 4 };
     localStorage.setItem(
-      'ai-survey-answers-v3',
-      JSON.stringify({ answers, lastQuestionIndex: 34 }),
+      'ai-survey-answers-v4',
+      JSON.stringify({ answers, lastQuestionIndex: 33 }),
     );
     const expected = computeScore(answers);
     renderApp(['/summary']);

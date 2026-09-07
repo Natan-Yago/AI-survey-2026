@@ -5,7 +5,7 @@ test.describe('Resume progress', () => {
     await page.goto('/');
     await page.evaluate(() => {
       localStorage.setItem(
-        'ai-survey-answers-v3',
+        'ai-survey-answers-v4',
         JSON.stringify({ answers: { q1: 0, q2: 1 }, lastQuestionIndex: 2 }),
       );
     });
@@ -23,7 +23,7 @@ test.describe('Resume progress', () => {
     await page.goto('/');
     await page.evaluate(() => {
       localStorage.setItem(
-        'ai-survey-answers-v3',
+        'ai-survey-answers-v4',
         JSON.stringify({
           answers: { q1: 0, q2: 0, q3: 0, q4: 0, q5: 0 },
           lastQuestionIndex: 0,
@@ -42,7 +42,7 @@ test.describe('Resume progress', () => {
     await page.goto('/');
     await page.evaluate(() => {
       localStorage.setItem(
-        'ai-survey-answers-v3',
+        'ai-survey-answers-v4',
         JSON.stringify({ answers: { q1: 0, q2: 1 }, lastQuestionIndex: 1 }),
       );
     });
@@ -63,7 +63,7 @@ test.describe('Resume progress', () => {
     });
     await page.reload();
 
-    await expect(page.getByRole('button', { name: 'התחל סקר ←' })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'למענה ←' })).toBeDisabled();
     await expect(page.getByRole('button', { name: /המשך מהמקום/ })).toHaveCount(0);
     await expect(page.getByRole('button', { name: /התחל מחדש/ })).toHaveCount(0);
   });

@@ -44,6 +44,7 @@ export interface MatrixMultiQuestion extends BaseQuestion {
   rows: string[];
   columns: string[];
   maxPerColumn?: number;
+  exclusiveRows?: number[];
 }
 
 export type Question =
