@@ -194,12 +194,37 @@ export function isQuestionAnswered(index: number, answers: AnswersMap): boolean 
   const q = surveyQuestions[index];
   const a = answers[`q${index + 1}`];
   if (a === undefined) return false;
-  if (q.type === 'single') return typeof a === 'number';
-  if (q.type === 'multi') return Array.isArray(a) && a.length > 0;
-  if (q.type === 'matrix-multi') return Array.isArray(a) && a.length > 0;
+  if (q.type === 'single') {
+    return typeof a === 'number'
+      && Number.isInteger(a)
+      && a >= 0
+      && a < q.options.length;
+  }
+  if (q.type === 'multi') {
+    return Array.isArray(a) && a.some((option) =>
+      typeof option === 'number'
+      && Number.isInteger(option)
+      && option >= 0
+      && option < q.options.length,
+    );
+  }
+  if (q.type === 'matrix-multi') {
+    return Array.isArray(a) && a.some((key) => {
+      if (typeof key !== 'string') return false;
+      const match = /^(0|[1-9]\d*):(0|[1-9]\d*)$/.exec(key);
+      return match !== null
+        && Number(match[1]) < q.rows.length
+        && Number(match[2]) < q.columns.length;
+    });
+  }
   // matrix-single & matrix-column-single
   if (typeof a !== 'object' || a === null || Array.isArray(a)) return false;
   const m = a as MatrixSingleAnswer;
-  const expectedKeys = q.type === 'matrix-single' ? q.rows.length : q.columns.length;
-  return Object.keys(m).length === expectedKeys;
+  const promptCount = q.type === 'matrix-single' ? q.rows.length : q.columns.length;
+  const choiceCount = q.type === 'matrix-single' ? q.columns.length : q.rows.length;
+  return Array.from({ length: promptCount }, (_, promptIndex) => promptIndex).every(
+    (promptIndex) => Number.isInteger(m[promptIndex])
+      && m[promptIndex] >= 0
+      && m[promptIndex] < choiceCount,
+  );
 }

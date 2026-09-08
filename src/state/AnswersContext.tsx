@@ -48,7 +48,7 @@ const AnswersContext = createContext<AnswersContextValue | null>(null);
 
 export function AnswersProvider({ children }: { children: ReactNode }) {
   const initial = useMemo(() => loadState(), []);
-  const [answers, setAnswers] = useState<AnswersMap>(initial.answers as AnswersMap);
+  const [answers, setAnswers] = useState<AnswersMap>(initial.answers);
   const [lastQuestionIndex, setLastQuestionIndexState] = useState<number>(initial.lastQuestionIndex);
   const [seenFacts, setSeenFacts] = useState<Set<number>>(() => loadSeenFacts());
 

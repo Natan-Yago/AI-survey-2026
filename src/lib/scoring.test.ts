@@ -270,19 +270,24 @@ describe('computeScore', () => {
 });
 
 describe('isQuestionAnswered', () => {
-  it('single: false when undefined, true when a number is set', () => {
+  it('single: requires an in-range integer option', () => {
     expect(isQuestionAnswered(0, {})).toBe(false);
     expect(isQuestionAnswered(0, { q1: 0 })).toBe(true);
+    expect(isQuestionAnswered(0, { q1: -1 })).toBe(false);
+    expect(isQuestionAnswered(0, { q1: 99 })).toBe(false);
   });
 
-  it('multi: false when empty array or missing, true when non-empty', () => {
-    expect(isQuestionAnswered(12, {})).toBe(false); // Q13 is multi
-    expect(isQuestionAnswered(12, { q13: [] })).toBe(false);
-    expect(isQuestionAnswered(12, { q13: [1, 2] })).toBe(true);
+  it('multi: requires at least one valid option index', () => {
+    expect(isQuestionAnswered(14, {})).toBe(false);
+    expect(isQuestionAnswered(14, { q15: [] })).toBe(false);
+    expect(isQuestionAnswered(14, { q15: [1, 2] })).toBe(true);
+    expect(isQuestionAnswered(14, { q15: [99] })).toBe(false);
   });
 
-  it('matrix-multi: false when empty array, true when non-empty', () => {
+  it('matrix-multi: requires at least one exact, in-range row:column key', () => {
     expect(isQuestionAnswered(12, { q13: [] })).toBe(false);
+    expect(isQuestionAnswered(12, { q13: ['1:0'] })).toBe(true);
+    expect(isQuestionAnswered(12, { q13: ['bad:0', '7:0'] })).toBe(false);
   });
 
   it('matrix-single: requires an entry for every row', () => {
@@ -290,6 +295,8 @@ describe('isQuestionAnswered', () => {
     expect(isQuestionAnswered(5, {})).toBe(false);
     expect(isQuestionAnswered(5, { q6: { 0: 1 } })).toBe(false);
     expect(isQuestionAnswered(5, { q6: { 0: 1, 1: 2 } })).toBe(true);
+    expect(isQuestionAnswered(5, { q6: { 8: 1, 9: 2 } })).toBe(false);
+    expect(isQuestionAnswered(5, { q6: { 0: 6, 1: 2 } })).toBe(false);
   });
 
   it('matrix-column-single: requires an entry for every column', () => {
@@ -297,5 +304,6 @@ describe('isQuestionAnswered', () => {
     expect(isQuestionAnswered(23, {})).toBe(false);
     expect(isQuestionAnswered(23, { q24: { 0: 1, 1: 2 } })).toBe(false);
     expect(isQuestionAnswered(23, { q24: { 0: 1, 1: 2, 2: 3 } })).toBe(true);
+    expect(isQuestionAnswered(23, { q24: { 4: 1, 5: 2, 6: 3 } })).toBe(false);
   });
 });

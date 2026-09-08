@@ -34,6 +34,46 @@ describe('storage', () => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers: { q1: 1 }, lastQuestionIndex: 'x' }));
       expect(loadState()).toEqual({ answers: { q1: 1 }, lastQuestionIndex: 0 });
     });
+
+    it('preserves valid partial answers while removing malformed values and keys', () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        answers: {
+          q1: 99,
+          q7: { 0: 1, 5: 2, bad: 0 },
+          q15: [2, 2, '3', 99],
+          q17: ['0:0', '0:0', '8:0', 'bad:0', 1, '1:1'],
+          q35: 0,
+          unexpected: [0],
+        },
+        lastQuestionIndex: 99,
+      }));
+
+      expect(loadState()).toEqual({
+        answers: {
+          q7: { 0: 1 },
+          q15: [2],
+          q17: ['0:0', '1:1'],
+        },
+        lastQuestionIndex: 33,
+      });
+    });
+
+    it('normalizes persisted limits and exclusivity on the correct matrix columns', () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        answers: {
+          q15: [0, 1, 2, 3],
+          q17: ['0:0', '1:0', '7:0', '0:1', '1:1', '2:1', '3:1'],
+          q21: [0, 7, 8],
+        },
+        lastQuestionIndex: 20,
+      }));
+
+      expect(loadState().answers).toEqual({
+        q15: [0, 1, 2],
+        q17: ['0:1', '1:1', '2:1', '7:0'],
+        q21: [7],
+      });
+    });
   });
 
   describe('saveState', () => {

@@ -28,6 +28,19 @@ function isMatrixAnswer(value: unknown): value is MatrixSingleAnswer {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+function isMatrixKeyInColumn(key: string, columnIndex: number): boolean {
+  const match = /^(0|[1-9]\d*):(0|[1-9]\d*)$/.exec(key);
+  return match !== null && Number(match[2]) === columnIndex;
+}
+
+function sortMatrixKeys(keys: Iterable<string>): string[] {
+  return Array.from(keys).sort((a, b) => {
+    const [aRow, aColumn] = a.split(':').map(Number);
+    const [bRow, bColumn] = b.split(':').map(Number);
+    return aRow - bRow || aColumn - bColumn;
+  });
+}
+
 export default function QuestionPage() {
   const { num } = useParams<{ num: string }>();
   const navigate = useNavigate();
@@ -132,11 +145,12 @@ export default function QuestionPage() {
       } else if (exclusiveOptions.has(optionIndex)) {
         current.clear();
         current.add(optionIndex);
-      } else if (q.maxSelections && current.size >= q.maxSelections) {
-        setNote(`ניתן לבחור עד ${q.maxSelections} אפשרויות.`);
-        return;
       } else {
         exclusiveOptions.forEach((exclusiveOption) => current.delete(exclusiveOption));
+        if (q.maxSelections && current.size >= q.maxSelections) {
+          setNote(`ניתן לבחור עד ${q.maxSelections} אפשרויות.`);
+          return;
+        }
         current.add(optionIndex);
       }
       setNote('');
@@ -155,19 +169,25 @@ export default function QuestionPage() {
     const optionKey = `${rowIndex}:${columnIndex}`;
     const current = new Set(Array.isArray(answer) ? answer as MatrixMultiAnswer : []);
     const exclusiveRows = new Set(q.exclusiveRows ?? []);
+    const isExclusiveColumn = q.exclusiveColumns === undefined
+      || q.exclusiveColumns.includes(columnIndex);
     if (current.has(optionKey)) {
       current.delete(optionKey);
-    } else if (exclusiveRows.has(rowIndex)) {
+    } else if (isExclusiveColumn && exclusiveRows.has(rowIndex)) {
       Array.from(current).forEach((key) => {
-        if (key.endsWith(`:${columnIndex}`)) current.delete(key);
+        if (isMatrixKeyInColumn(key, columnIndex)) current.delete(key);
       });
       current.add(optionKey);
     } else {
-      exclusiveRows.forEach((exclusiveRow) => current.delete(`${exclusiveRow}:${columnIndex}`));
+      if (isExclusiveColumn) {
+        exclusiveRows.forEach((exclusiveRow) => current.delete(`${exclusiveRow}:${columnIndex}`));
+      }
       const max = q.maxPerColumn;
       if (max !== undefined) {
         let countInColumn = 0;
-        current.forEach((k) => { if (k.endsWith(`:${columnIndex}`)) countInColumn += 1; });
+        current.forEach((currentKey) => {
+          if (isMatrixKeyInColumn(currentKey, columnIndex)) countInColumn += 1;
+        });
         if (countInColumn >= max) {
           setNote(`ניתן לבחור עד ${max} אפשרויות בכל עמודה.`);
           return;
@@ -176,47 +196,7 @@ export default function QuestionPage() {
       current.add(optionKey);
     }
     setNote('');
-    setAnswer(idx, Array.from(current).sort());
-  }
-
-  function handleMatrixTableMulti(q: Question, rowIndex: number, columnIndex: number) {
-    if (q.type !== 'matrix-multi') return;
-    const optionKey = `${rowIndex}:${columnIndex}`;
-    const current = new Set(Array.isArray(answer) ? answer as MatrixMultiAnswer : []);
-    const exclusiveRows = new Set(q.exclusiveRows ?? []);
-
-    if (current.has(optionKey)) {
-      current.delete(optionKey);
-      setNote('');
-      setAnswer(idx, Array.from(current).sort());
-      return;
-    }
-
-    if (exclusiveRows.has(rowIndex)) {
-      Array.from(current).forEach((key) => {
-        if (key.endsWith(`:${columnIndex}`)) current.delete(key);
-      });
-      current.add(optionKey);
-      setNote('');
-      setAnswer(idx, Array.from(current).sort());
-      return;
-    }
-
-    exclusiveRows.forEach((exclusiveRow) => current.delete(`${exclusiveRow}:${columnIndex}`));
-
-    const max = q.maxPerColumn;
-    if (max !== undefined) {
-      let countInColumn = 0;
-      current.forEach((k) => { if (k.endsWith(`:${columnIndex}`)) countInColumn += 1; });
-      if (countInColumn >= max) {
-        setNote(`ניתן לבחור עד ${max} אפשרויות בכל עמודה.`);
-        return;
-      }
-    }
-
-    current.add(optionKey);
-    setNote('');
-    setAnswer(idx, Array.from(current).sort());
+    setAnswer(idx, sortMatrixKeys(current));
   }
 
   function renderQuestionBody() {
@@ -331,7 +311,7 @@ export default function QuestionPage() {
           role="checkbox"
           ariaLabel={question.title}
           isChecked={(rowIndex, columnIndex) => saved.has(`${rowIndex}:${columnIndex}`)}
-          onSelect={(rowIndex, columnIndex) => handleMatrixTableMulti(question, rowIndex, columnIndex)}
+          onSelect={(rowIndex, columnIndex) => handleMatrixMulti(question, rowIndex, columnIndex)}
         />
       );
     }

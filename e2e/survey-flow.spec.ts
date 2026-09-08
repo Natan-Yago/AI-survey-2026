@@ -104,4 +104,29 @@ test.describe('Full survey journey', () => {
     await page.getByRole('button', { name: 'למענה ←' }).click();
     await expect(page.getByRole('button', { name: 'הבא ←' })).toBeDisabled();
   });
+
+  test('Q21 applies exclusivity only to no-concerns and unknown answers', async ({ page }) => {
+    await clearStorage(page);
+    await page.goto('/#/q/21');
+
+    const privacy = page.getByRole('checkbox', { name: /פרטיות/ });
+    const workforce = page.getByRole('checkbox', { name: /השפעה על כוח האדם/ });
+    const noConcerns = page.getByRole('checkbox', { name: /לא זוהו אצלנו חששות/ });
+    const unknown = page.getByRole('checkbox', { name: /לא יודע\/ת/ });
+
+    await privacy.click();
+    await workforce.click();
+    await noConcerns.click();
+    await expect(privacy).toHaveAttribute('aria-checked', 'false');
+    await expect(workforce).toHaveAttribute('aria-checked', 'false');
+    await expect(noConcerns).toHaveAttribute('aria-checked', 'true');
+
+    await unknown.click();
+    await expect(noConcerns).toHaveAttribute('aria-checked', 'false');
+    await expect(unknown).toHaveAttribute('aria-checked', 'true');
+
+    await workforce.click();
+    await expect(unknown).toHaveAttribute('aria-checked', 'false');
+    await expect(workforce).toHaveAttribute('aria-checked', 'true');
+  });
 });

@@ -67,4 +67,36 @@ test.describe('Resume progress', () => {
     await expect(page.getByRole('button', { name: /המשך מהמקום/ })).toHaveCount(0);
     await expect(page.getByRole('button', { name: /התחל מחדש/ })).toHaveCount(0);
   });
+
+  test('Reload restores valid Q17 checkboxes and removes malformed matrix keys', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => {
+      localStorage.setItem(
+        'ai-survey-answers-v4',
+        JSON.stringify({
+          answers: { q17: ['0:0', 1, 'bad:0', '8:0'] },
+          lastQuestionIndex: 16,
+        }),
+      );
+    });
+    await page.reload();
+    await page.goto('/#/q/17');
+
+    const rows = page.locator('.matrix-table-shell tbody tr');
+    const firstChoice = rows.nth(0).getByRole('checkbox').nth(0);
+    const secondChoice = rows.nth(1).getByRole('checkbox').nth(0);
+    await expect(firstChoice).toHaveAttribute('aria-checked', 'true');
+    await expect(secondChoice).toHaveAttribute('aria-checked', 'false');
+
+    await secondChoice.click();
+    await page.reload();
+    await expect(firstChoice).toHaveAttribute('aria-checked', 'true');
+    await expect(secondChoice).toHaveAttribute('aria-checked', 'true');
+
+    const storedAnswer = await page.evaluate(() => {
+      const raw = localStorage.getItem('ai-survey-answers-v4');
+      return raw ? JSON.parse(raw).answers.q17 : undefined;
+    });
+    expect(storedAnswer).toEqual(['0:0', '1:0']);
+  });
 });

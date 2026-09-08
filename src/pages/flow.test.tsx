@@ -113,6 +113,69 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     expect(await screen.findByRole('button', { name: 'למענה ←' })).toBeDisabled();
   });
 
+  it('Q7 matrix-single replaces only the selected row in desktop and mobile layouts', async () => {
+    const user = userEvent.setup();
+    renderApp(['/q/7']);
+
+    const rows = document.querySelectorAll('.matrix-table-shell tbody tr');
+    const firstRowChoices = within(rows[0] as HTMLElement).getAllByRole('radio');
+    const secondRowChoices = within(rows[1] as HTMLElement).getAllByRole('radio');
+    await user.click(firstRowChoices[1]);
+    await user.click(secondRowChoices[2]);
+
+    const mobileSelects = document.querySelectorAll<HTMLSelectElement>('.matrix-mobile-select');
+    expect(mobileSelects[0].value).toBe('1');
+    expect(mobileSelects[1].value).toBe('2');
+
+    await user.selectOptions(mobileSelects[0], '3');
+    expect(firstRowChoices[1]).toHaveAttribute('aria-checked', 'false');
+    expect(firstRowChoices[3]).toHaveAttribute('aria-checked', 'true');
+    expect(secondRowChoices[2]).toHaveAttribute('aria-checked', 'true');
+  });
+
+  it('Q13 enforces matrix-multi limits independently for each column', async () => {
+    const user = userEvent.setup();
+    renderApp(['/q/13']);
+
+    const rows = document.querySelectorAll('.matrix-table-shell tbody tr');
+    const firstRowChoices = within(rows[0] as HTMLElement).getAllByRole('checkbox');
+    await user.click(firstRowChoices[0]);
+    await user.click(within(rows[1] as HTMLElement).getAllByRole('checkbox')[0]);
+    await user.click(within(rows[2] as HTMLElement).getAllByRole('checkbox')[0]);
+    await user.click(firstRowChoices[1]);
+
+    const fourthInFirstColumn = within(rows[3] as HTMLElement).getAllByRole('checkbox')[0];
+    await user.click(fourthInFirstColumn);
+    expect(fourthInFirstColumn).toHaveAttribute('aria-checked', 'false');
+    expect(firstRowChoices[1]).toHaveAttribute('aria-checked', 'true');
+
+    await user.click(within(rows[1] as HTMLElement).getAllByRole('checkbox')[0]);
+    expect(firstRowChoices[0]).toHaveAttribute('aria-checked', 'true');
+    expect(firstRowChoices[1]).toHaveAttribute('aria-checked', 'true');
+    await user.click(fourthInFirstColumn);
+    expect(fourthInFirstColumn).toHaveAttribute('aria-checked', 'true');
+  });
+
+  it('Q15 enforces its max while deselection leaves unrelated choices intact', async () => {
+    const user = userEvent.setup();
+    renderApp(['/q/15']);
+
+    const options = screen.getAllByRole('checkbox');
+    await user.click(options[0]);
+    await user.click(options[1]);
+    await user.click(options[2]);
+    await user.click(options[3]);
+    expect(options[3]).toHaveAttribute('aria-checked', 'false');
+    expect(screen.getByText('ניתן לבחור עד 3 אפשרויות.')).toBeInTheDocument();
+
+    await user.click(options[1]);
+    expect(options[0]).toHaveAttribute('aria-checked', 'true');
+    expect(options[1]).toHaveAttribute('aria-checked', 'false');
+    expect(options[2]).toHaveAttribute('aria-checked', 'true');
+    await user.click(options[3]);
+    expect(options[3]).toHaveAttribute('aria-checked', 'true');
+  });
+
   it('Q17 allows independent matrix selections and limits each column to 3', async () => {
     const user = userEvent.setup();
     renderApp(['/q/17']);
@@ -123,6 +186,11 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     await user.click(firstRowButtons[1]);
     expect(firstRowButtons[0]).toHaveAttribute('aria-checked', 'true');
     expect(firstRowButtons[1]).toHaveAttribute('aria-checked', 'true');
+
+    const mobileRows = document.querySelectorAll('.matrix-mobile-row');
+    const firstMobileRowButtons = within(mobileRows[0] as HTMLElement).getAllByRole('checkbox');
+    expect(firstMobileRowButtons[0]).toHaveAttribute('aria-checked', 'true');
+    expect(firstMobileRowButtons[1]).toHaveAttribute('aria-checked', 'true');
 
     await user.click(within(rows[1] as HTMLElement).getAllByRole('checkbox')[0]);
     await user.click(within(rows[2] as HTMLElement).getAllByRole('checkbox')[0]);
@@ -144,11 +212,11 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     const futureExclusiveChoice = within(rows[7] as HTMLElement).getAllByRole('checkbox')[1];
     await user.click(futureExclusiveChoice);
     expect(futureExclusiveChoice).toHaveAttribute('aria-checked', 'true');
-    expect(firstRowButtons[1]).toHaveAttribute('aria-checked', 'false');
+    expect(firstRowButtons[1]).toHaveAttribute('aria-checked', 'true');
 
     await user.click(firstRowButtons[1]);
-    expect(firstRowButtons[1]).toHaveAttribute('aria-checked', 'true');
-    expect(futureExclusiveChoice).toHaveAttribute('aria-checked', 'false');
+    expect(firstRowButtons[1]).toHaveAttribute('aria-checked', 'false');
+    expect(futureExclusiveChoice).toHaveAttribute('aria-checked', 'true');
   });
 
   it('Q17 ignores a stale answer with the wrong shape instead of crashing', () => {
@@ -165,19 +233,105 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     expect(screen.getByRole('button', { name: 'הבא ←' })).toBeDisabled();
   });
 
-  it('Q21 keeps no-concerns and unknown answers exclusive from specific risks', async () => {
+  it('Q17 removes malformed persisted keys and remains interactive', async () => {
+    const user = userEvent.setup();
+    localStorage.setItem(
+      'ai-survey-answers-v4',
+      JSON.stringify({
+        answers: { q17: ['0:0', 1, 'bad:0', '8:0'] },
+        lastQuestionIndex: 16,
+      }),
+    );
+
+    renderApp(['/q/17']);
+
+    const rows = document.querySelectorAll('.matrix-table-shell tbody tr');
+    const firstChoice = within(rows[0] as HTMLElement).getAllByRole('checkbox')[0];
+    const secondChoice = within(rows[1] as HTMLElement).getAllByRole('checkbox')[0];
+    expect(firstChoice).toHaveAttribute('aria-checked', 'true');
+    await user.click(secondChoice);
+    expect(firstChoice).toHaveAttribute('aria-checked', 'true');
+    expect(secondChoice).toHaveAttribute('aria-checked', 'true');
+  });
+
+  it('Q19 matrix-column-single replaces only the selected column across layouts', async () => {
+    const user = userEvent.setup();
+    renderApp(['/q/19']);
+
+    const rows = document.querySelectorAll('.matrix-table-shell tbody tr');
+    const todayChoices = within(rows[0] as HTMLElement).getAllByRole('radio');
+    const futureChoices = within(rows[1] as HTMLElement).getAllByRole('radio');
+    await user.click(todayChoices[0]);
+    await user.click(futureChoices[1]);
+
+    const mobileSelects = document.querySelectorAll<HTMLSelectElement>('.matrix-mobile-select');
+    expect(mobileSelects[0].value).toBe('0');
+    expect(mobileSelects[1].value).toBe('1');
+
+    await user.selectOptions(mobileSelects[1], '2');
+    expect(todayChoices[0]).toHaveAttribute('aria-checked', 'true');
+    expect(futureChoices[1]).toHaveAttribute('aria-checked', 'false');
+    expect(futureChoices[2]).toHaveAttribute('aria-checked', 'true');
+  });
+
+  it('Q19 does not treat malformed persisted prompt keys as complete', () => {
+    localStorage.setItem(
+      'ai-survey-answers-v4',
+      JSON.stringify({ answers: { q19: { 8: 0, 9: 1 } }, lastQuestionIndex: 18 }),
+    );
+
+    renderApp(['/q/19']);
+
+    expect(screen.getByRole('button', { name: 'הבא ←' })).toBeDisabled();
+    document.querySelectorAll('.matrix-table-shell [role="radio"]').forEach((choice) => {
+      expect(choice).toHaveAttribute('aria-checked', 'false');
+    });
+  });
+
+  it('Q21 keeps no-concerns and unknown exclusive from every specific risk', async () => {
     const user = userEvent.setup();
     renderApp(['/q/21']);
 
     const options = screen.getAllByRole('checkbox');
-    await user.click(options[0]);
-    await user.click(options[4]);
-    expect(options[0]).toHaveAttribute('aria-checked', 'false');
-    expect(options[4]).toHaveAttribute('aria-checked', 'true');
+    expect(options).toHaveLength(9);
 
-    await user.click(options[1]);
-    expect(options[4]).toHaveAttribute('aria-checked', 'false');
-    expect(options[1]).toHaveAttribute('aria-checked', 'true');
+    const privacy = screen.getByRole('checkbox', { name: /פרטיות/ });
+    const workforce = screen.getByRole('checkbox', { name: /השפעה על כוח האדם/ });
+    const noConcerns = screen.getByRole('checkbox', { name: /לא זוהו אצלנו חששות/ });
+    const unknown = screen.getByRole('checkbox', { name: /לא יודע\/ת/ });
+
+    await user.click(privacy);
+    await user.click(workforce);
+    await user.click(noConcerns);
+    expect(privacy).toHaveAttribute('aria-checked', 'false');
+    expect(workforce).toHaveAttribute('aria-checked', 'false');
+    expect(noConcerns).toHaveAttribute('aria-checked', 'true');
+
+    await user.click(unknown);
+    expect(noConcerns).toHaveAttribute('aria-checked', 'false');
+    expect(unknown).toHaveAttribute('aria-checked', 'true');
+
+    await user.click(workforce);
+    expect(unknown).toHaveAttribute('aria-checked', 'false');
+    expect(workforce).toHaveAttribute('aria-checked', 'true');
+  });
+
+  it('Q24 matrix-column-single keeps other columns when a mobile selection changes', async () => {
+    const user = userEvent.setup();
+    renderApp(['/q/24']);
+
+    const rows = document.querySelectorAll('.matrix-list .matrix-row');
+    const firstColumnChoices = within(rows[0] as HTMLElement).getAllByRole('radio');
+    const secondColumnChoices = within(rows[1] as HTMLElement).getAllByRole('radio');
+    const firstColumnSelect = within(rows[0] as HTMLElement).getByRole('combobox') as HTMLSelectElement;
+    await user.click(firstColumnChoices[0]);
+    await user.click(secondColumnChoices[1]);
+    expect(firstColumnSelect.value).toBe('0');
+
+    await user.selectOptions(firstColumnSelect, '2');
+    expect(firstColumnChoices[0]).toHaveAttribute('aria-checked', 'false');
+    expect(firstColumnChoices[2]).toHaveAttribute('aria-checked', 'true');
+    expect(secondColumnChoices[1]).toHaveAttribute('aria-checked', 'true');
   });
 
   it('Summary page renders the maturity level matching computeScore() for the persisted answers', () => {
