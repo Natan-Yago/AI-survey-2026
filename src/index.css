@@ -9,8 +9,8 @@
   --color-bg: #F7F7F5;
   --color-border: #E5E5E5;
 
-  --font-sans: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-  --font-latin: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --font-sans: 'Open Sans', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --font-latin: 'Open Sans', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
 
   --container-survey: 720px;
 }
@@ -26,7 +26,7 @@
 }
 
 html {
-  font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  font-family: 'Open Sans', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
   background: var(--bg);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
@@ -46,7 +46,7 @@ body {
   flex-direction: column;
 }
 
-.font-latin { font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; }
+.font-latin { font-family: 'Open Sans', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; }
 
 *:focus-visible {
   outline: 2px solid var(--deloitte-green);
@@ -61,6 +61,13 @@ body {
     radial-gradient(circle at bottom left, rgba(134, 188, 37, 0.26), rgba(134, 188, 37, 0) 30rem),
     linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(239, 244, 229, 0.45)),
     #f5f7ef;
+}
+.welcome-title {
+  color: #4c7a16;
+  background: linear-gradient(90deg, #5f8f19 0%, #77c528 48%, #22db24 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 /* Desktop hero layout: only when viewport is wide AND landscape enough */
 /* Hero image is ~4:5 portrait; at 100svh height it needs 80svh of width. */
@@ -287,7 +294,7 @@ body {
 }
 
 .kbd-badge {
-  font-family: 'Open Sans Hebrew', system-ui, sans-serif;
+  font-family: 'Open Sans', system-ui, sans-serif;
   width: 28px; height: 28px; border-radius: 6px;
   background: #F1F2F4; color: var(--muted);
   font-weight: 600; font-size: 13px;
@@ -323,7 +330,7 @@ body {
 .btn-ghost:hover { background: #EFEFEC; }
 
 .kbd {
-  font-family: 'Open Sans Hebrew', system-ui, sans-serif;
+  font-family: 'Open Sans', system-ui, sans-serif;
   font-size: 11px; background: #fff;
   border: 1px solid var(--border); border-bottom-width: 2px;
   border-radius: 6px; padding: 2px 6px;

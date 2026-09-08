@@ -23,7 +23,8 @@ describe('Survey flow (Welcome → Question → Summary)', () => {
     const user = userEvent.setup();
     renderApp(['/']);
     expect(screen.getByText('מידע על הסקר')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 1, name: 'מדד בשלות ואימוץ AI בארגונים' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'AI Transformation Readiness Index' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'מדד בשלות ואימוץ AI בארגונים' })).toBeInTheDocument();
     const consentCheckbox = screen.getByRole('checkbox', { name: /מדיניות הפרטיות של Deloitte/ });
     const startButton = screen.getByRole('button', { name: 'למענה ←' });
     expect(startButton).toBeDisabled();

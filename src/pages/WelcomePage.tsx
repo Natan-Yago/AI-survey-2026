@@ -53,12 +53,12 @@ export default function WelcomePage() {
         </Link>
           <main className="welcome-main flex-1 px-6 sm:px-10 lg:px-10 xl:px-14 pt-16 pb-12 sm:pt-20 sm:pb-16 lg:py-6 flex items-center justify-center">
             <div className="welcome-copy w-full max-w-xl">
-              <p dir="ltr" className="mb-3 text-right text-sm font-semibold text-[#567A16]">
+              <h1 dir="ltr" className="welcome-title mb-3 text-right text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold leading-tight">
                 AI Transformation Readiness Index
-              </p>
-              <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-5 lg:mb-3 xl:mb-4">
-                מדד בשלות ואימוץ <span className="font-latin">AI</span> בארגונים
               </h1>
+              <h2 className="text-xl sm:text-2xl lg:text-xl xl:text-2xl font-bold leading-tight mb-5 lg:mb-3 xl:mb-4">
+                מדד בשלות ואימוץ <span className="font-latin">AI</span> בארגונים
+              </h2>
               <p className="text-lg lg:text-base xl:text-lg text-[#1A1A1A]/80 leading-relaxed mb-5 lg:mb-3 xl:mb-4">
                 בעידן שבו בינה מלאכותית משנה במהירות את הדרך שבה ארגונים פועלים, מתחרים ומייצרים ערך, היכולת לאמץ, להטמיע ולהרחיב שימוש ביכולות <span className="font-latin">AI</span> הופכת לגורם אסטרטגי מרכזי.
               </p>
