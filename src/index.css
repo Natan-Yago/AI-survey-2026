@@ -84,13 +84,30 @@ body {
     min-height: 0;
   }
   .welcome-image-col { flex-shrink: 0; }
+  .welcome-content-col {
+    container-type: inline-size;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
   .welcome-main {
-    min-height: 0;
-    overflow: hidden;
+    min-height: 100svh;
+    align-items: safe center;
   }
   .welcome-copy {
-    max-height: calc(100svh - 3rem);
+    max-height: none;
   }
+}
+
+@container (max-width: 56rem) {
+  .welcome-main { padding-top: 7rem; }
+}
+
+@container (max-width: 42rem) {
+  .welcome-title { font-size: 3rem; }
+}
+
+@container (max-width: 32.5rem) {
+  .welcome-title { font-size: 2.25rem; }
 }
 
 /* Mobile / no-image layout: narrow viewport OR tall (portrait-ish) viewport. */
@@ -121,6 +138,14 @@ body {
 @media ((max-width: 1023px) or (max-aspect-ratio: 5/4)) and (min-width: 640px) {
   .welcome-body::after { height: 7rem; }
   .welcome-body .welcome-main { padding-top: 8rem; }
+}
+
+@media (max-width: 639px) {
+  .welcome-title { font-size: 2.125rem; }
+}
+
+@media (max-width: 359px) {
+  .welcome-title { font-size: 1.75rem; }
 }
 
 /* ----- Survey body ----- */

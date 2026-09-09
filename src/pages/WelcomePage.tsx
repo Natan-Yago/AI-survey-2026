@@ -53,8 +53,13 @@ export default function WelcomePage() {
         </Link>
           <main className="welcome-main flex-1 px-6 sm:px-10 lg:px-10 xl:px-14 pt-16 pb-12 sm:pt-20 sm:pb-16 lg:py-6 flex items-center justify-center">
             <div className="welcome-copy w-full max-w-xl">
-              <h1 dir="ltr" className="welcome-title mb-3 text-right text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold leading-tight">
-                AI Transformation Readiness Index
+              <h1
+                dir="ltr"
+                aria-label="AI Transformation Readiness Index"
+                className="welcome-title mb-3 text-right text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold leading-tight"
+              >
+                <span aria-hidden="true" className="welcome-title-line block whitespace-nowrap">AI Transformation</span>
+                <span aria-hidden="true" className="welcome-title-line block whitespace-nowrap">Readiness Index</span>
               </h1>
               <h2 className="text-xl sm:text-2xl lg:text-xl xl:text-2xl font-bold leading-tight mb-5 lg:mb-3 xl:mb-4">
                 מדד בשלות ואימוץ <span className="font-latin">AI</span> בארגונים
