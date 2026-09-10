@@ -67,7 +67,7 @@ export default function WelcomePage() {
               <p className="text-lg lg:text-base xl:text-lg text-[#1A1A1A]/80 leading-relaxed mb-5 lg:mb-3 xl:mb-4">
                 בעידן שבו בינה מלאכותית משנה במהירות את הדרך שבה ארגונים פועלים, מתחרים ומייצרים ערך, היכולת לאמץ, להטמיע ולהרחיב שימוש ביכולות <span className="font-latin">AI</span> הופכת לגורם אסטרטגי מרכזי.
               </p>
-              <p className="text-base lg:text-sm xl:text-base text-[#6B7280] leading-relaxed mb-10 lg:mb-5 xl:mb-7">
+              <p className="text-lg lg:text-base xl:text-lg text-[#1A1A1A]/80 leading-relaxed mb-5 lg:mb-3 xl:mb-4">
                 סקר זה נועד לבחון את מצב ה-<span className="font-latin">AI</span> בארגונים בישראל, את רמת המוכנות, האימוץ, ההשקעות, החסמים והתוכניות קדימה.
               </p>
               <details className="mb-5 border-y border-[#E5E5E5] py-4 text-sm text-[#4B5563]">

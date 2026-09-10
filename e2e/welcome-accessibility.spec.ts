@@ -1,6 +1,27 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Welcome page accessibility', () => {
+  test('renders both description paragraphs with identical styles', async ({ page }) => {
+    await page.goto('/');
+
+    const paragraphStyles = await page.locator('.welcome-copy > p').evaluateAll((paragraphs) => (
+      paragraphs.map((paragraph) => {
+        const style = getComputedStyle(paragraph);
+        return {
+          color: style.color,
+          fontFamily: style.fontFamily,
+          fontSize: style.fontSize,
+          fontWeight: style.fontWeight,
+          lineHeight: style.lineHeight,
+          marginBottom: style.marginBottom,
+        };
+      })
+    ));
+
+    expect(paragraphStyles).toHaveLength(2);
+    expect(paragraphStyles[1]).toEqual(paragraphStyles[0]);
+  });
+
   test('keeps the title on exactly two fitted lines across viewport sizes', async ({ page }) => {
     const viewports = [
       { width: 1440, height: 900 },
